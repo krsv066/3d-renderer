@@ -9,4 +9,5 @@ add_executable(
     renderer
     src/main.cpp
     src/renderer.cpp
+    src/object.cpp
 )

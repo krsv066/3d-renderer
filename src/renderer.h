@@ -1,14 +1,12 @@
 #pragma once
 
+#include "object.h"
+
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <iostream>
 #include <vector>
-
-struct Point {
-    double x, y, z;
-};
 
 class Renderer {
 public:
@@ -16,7 +14,7 @@ public:
 
     explicit Renderer(int width, int height);
 
-    void RasterizeTriangle(Point p0, Point p1, Point p2, uint32_t color);
+    void Rasterize(Object obj);
 
     void Show();
 

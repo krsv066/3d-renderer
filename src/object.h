@@ -10,6 +10,8 @@ class Object {
 public:
     Object(std::initializer_list<Triangle> list);
 
+    void AddTriangle(Triangle t);
+
     template <typename... Args>
     void AddTriangle(Triangle t, Args... args) {
         obj_.push_back(t);
@@ -17,8 +19,6 @@ public:
             AddTriangle(args...);
         }
     }
-
-    void AddTriangle(Triangle t);
 
 private:
     std::vector<Triangle> obj_;

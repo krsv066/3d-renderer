@@ -5,11 +5,14 @@ set(CMAKE_CXX_COMPILER "clang++")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
-include_directories(src/lib/eigen)
+include_directories(
+    src/include
+    src/lib/eigen
+)
 
 add_executable(
     renderer
     src/main.cpp
-    src/renderer.cpp
-    src/object.cpp
+    src/renderer/renderer.cpp
+    src/scene/object.cpp
 )

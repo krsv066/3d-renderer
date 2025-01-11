@@ -1,6 +1,5 @@
 #include "object.h"
 #include "renderer.h"
-
 #include <cmath>
 
 int main(int argc, char* argv[]) {

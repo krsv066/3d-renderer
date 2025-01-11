@@ -1,6 +1,5 @@
 #include "renderer.h"
 #include "object.h"
-
 #include <Eigen/Dense>
 #include <iostream>
 
@@ -21,7 +20,7 @@ void Renderer::SetProjectionMatrix(double fov, double aspect, double near, doubl
 }
 
 void Renderer::Rasterize(Object obj) {
-    for (const auto& tr : obj.obj_) {
+    for (const auto& tr : obj.object_) {
         Eigen::Vector4d p0 = ProjectVertex(tr.a);
         Eigen::Vector4d p1 = ProjectVertex(tr.b);
         Eigen::Vector4d p2 = ProjectVertex(tr.c);

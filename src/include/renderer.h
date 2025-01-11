@@ -1,7 +1,6 @@
 #pragma once
 
 #include "object.h"
-
 #include <Eigen/Dense>
 #include <cstdint>
 #include <vector>

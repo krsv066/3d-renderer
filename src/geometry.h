@@ -1,12 +1,9 @@
 #pragma once
 
+#include <Eigen/Dense>
 #include <cstdint>
 
-struct Point {
-    double x, y, z;
-};
-
 struct Triangle {
-    Point a, b, c;
+    Eigen::Vector3d a, b, c;
     uint32_t color;
 };

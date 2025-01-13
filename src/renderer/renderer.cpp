@@ -1,12 +1,11 @@
 #include "renderer.h"
 #include "object.h"
 #include <Eigen/Dense>
-#include <iostream>
+#include <SFML/Graphics.hpp>
 
-Renderer::Renderer(int width, int height) : width_(width), height_(height) {
+Renderer::Renderer(uint32_t width, uint32_t height) : width_(width), height_(height) {
     z_buffer_.assign(width_ * height_, std::numeric_limits<double>::infinity());
     frame_buffer_.assign(width_ * height_, 0x000000);
-    
 }
 
 void Renderer::SetProjectionMatrix(double fov, double aspect, double near, double far) {
@@ -21,16 +20,16 @@ void Renderer::SetProjectionMatrix(double fov, double aspect, double near, doubl
 
 void Renderer::Rasterize(Object obj) {
     for (const auto& tr : obj.object_) {
-        Eigen::Vector4d p0 = ProjectVertex(tr.a);
-        Eigen::Vector4d p1 = ProjectVertex(tr.b);
-        Eigen::Vector4d p2 = ProjectVertex(tr.c);
-        uint32_t color = tr.color;
+        const Eigen::Vector4d p0 = ProjectVertex(tr.a);
+        const Eigen::Vector4d p1 = ProjectVertex(tr.b);
+        const Eigen::Vector4d p2 = ProjectVertex(tr.c);
+        const uint32_t color = tr.color;
 
         /* clang-format off */
-        int min_x = std::max(0, static_cast<int>(std::floor(std::min({p0.x(), p1.x(), p2.x()}))));
-        int max_x = std::min(width_ - 1, static_cast<int>(std::ceil(std::max({p0.x(), p1.x(), p2.x()}))));
-        int min_y = std::max(0, static_cast<int>(std::floor(std::min({p0.y(), p1.y(), p2.y()}))));
-        int max_y = std::min(height_ - 1, static_cast<int>(std::ceil(std::max({p0.y(), p1.y(), p2.y()}))));
+        const int min_x = std::max(0, static_cast<int>(std::floor(std::min({p0.x(), p1.x(), p2.x()}))));
+        const int max_x = std::min(static_cast<int>(width_) - 1, static_cast<int>(std::ceil(std::max({p0.x(), p1.x(), p2.x()}))));
+        const int min_y = std::max(0, static_cast<int>(std::floor(std::min({p0.y(), p1.y(), p2.y()}))));
+        const int max_y = std::min(static_cast<int>(height_) - 1, static_cast<int>(std::ceil(std::max({p0.y(), p1.y(), p2.y()}))));
         /* clang-format on */
 
         double area = EdgeFunction(p0.x(), p0.y(), p1.x(), p1.y(), p2.x(), p2.y());
@@ -46,9 +45,9 @@ void Renderer::Rasterize(Object obj) {
                     w1 /= area;
                     w2 /= area;
 
-                    double z = w0 * p0.z() + w1 * p1.z() + w2 * p2.z();
+                    const double z = w0 * p0.z() + w1 * p1.z() + w2 * p2.z();
 
-                    int index = GetBufferIndex(x, y);
+                    const int index = GetBufferIndex(x, y);
                     if (z < z_buffer_[index]) {
                         z_buffer_[index] = z;
                         frame_buffer_[index] = color;
@@ -60,31 +59,35 @@ void Renderer::Rasterize(Object obj) {
 }
 
 void Renderer::Show() const {
-    for (int y = 0; y < height_; ++y) {
-        for (int x = 0; x < width_; ++x) {
+    sf::RenderWindow window(sf::VideoMode({width_, height_}), "3d renderer");
+    sf::Image image({width_, height_}, sf::Color::Black);
+
+    for (uint32_t y = 0; y < height_; ++y) {
+        for (uint32_t x = 0; x < width_; ++x) {
             int index = GetBufferIndex(x, y);
             uint32_t color = frame_buffer_[index];
-            if (color == 0x000000) {
-                std::cout << ' ';
-            } else if (color == 0xFF0000) {
-                std::cout << "\033[1;31mR\033[0m";
-            } else if (color == 0x00FF00) {
-                std::cout << "\033[1;32mG\033[0m";
-            } else if (color == 0x0000FF) {
-                std::cout << "\033[1;34mB\033[0m";
+            sf::Color pixel((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
+            image.setPixel({x, y}, pixel);
+        }
+    }
+
+    sf::Texture texture;
+    if (!texture.loadFromImage(image)) {
+        throw std::runtime_error("Failed to load texture");
+    }
+    sf::Sprite sprite(texture);
+
+    while (window.isOpen()) {
+        while (const std::optional event = window.pollEvent()) {
+            if (event->is<sf::Event::Closed>()) {
+                window.close();
             }
         }
-        std::cout << std::endl;
+
+        window.clear();
+        window.draw(sprite);
+        window.display();
     }
-}
-
-int Renderer::GetBufferIndex(int x, int y) const {
-    return y * width_ + x;
-}
-
-double Renderer::EdgeFunction(double x0, double y0, double x1, double y1, double x,
-                              double y) const {
-    return (y - y0) * (x1 - x0) - (x - x0) * (y1 - y0);
 }
 
 Eigen::Vector4d Renderer::ProjectVertex(const Eigen::Vector3d& p) const {
@@ -101,4 +104,13 @@ Eigen::Vector4d Renderer::ProjectVertex(const Eigen::Vector3d& p) const {
     projected.y() = (projected.y() + 1.0) * height_ * 0.5;
 
     return projected;
+}
+
+int Renderer::GetBufferIndex(int x, int y) const {
+    return y * width_ + x;
+}
+
+double Renderer::EdgeFunction(double x0, double y0, double x1, double y1, double x,
+                              double y) const {
+    return (y - y0) * (x1 - x0) - (x - x0) * (y1 - y0);
 }

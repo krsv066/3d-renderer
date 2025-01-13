@@ -1,11 +1,9 @@
-#include "object.h"
 #include "renderer.h"
 #include <cmath>
 
-int main(int argc, char* argv[]) {
-    // Settings for my fullscreen terminal
-    const int width = 265;
-    const int height = 63;
+int main() {
+    const uint32_t width = 1920;
+    const uint32_t height = 1080;
     Renderer renderer(width, height);
 
     double fov = 60.0 * M_PI / 180.0;

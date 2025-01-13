@@ -8,15 +8,13 @@
 
 class Renderer {
 public:
-    Renderer() = delete;
+    Renderer();  // TODO: asserts
 
-    explicit Renderer(uint32_t width, uint32_t height);
+    void SetWindow(uint32_t width, uint32_t height);
 
     void SetProjectionMatrix(double fov, double aspect, double near, double far);
 
-    void Rasterize(World scene);
-
-    void Show() const;
+    void Render(const World& scene);
 
 private:
     uint32_t width_;
@@ -24,6 +22,10 @@ private:
     std::vector<double> z_buffer_;
     std::vector<uint32_t> frame_buffer_;
     Eigen::Matrix4d projection_matrix_;
+
+    void Rasterize(const World& scene);
+
+    void Show() const;
 
     Eigen::Vector4d ProjectVertex(const Eigen::Vector3d& p) const;
 

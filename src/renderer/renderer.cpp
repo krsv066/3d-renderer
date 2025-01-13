@@ -4,9 +4,14 @@
 #include <Eigen/Dense>
 #include <SFML/Graphics.hpp>
 
-Renderer::Renderer(uint32_t width, uint32_t height) : width_(width), height_(height) {
+Renderer::Renderer() {
     z_buffer_.assign(width_ * height_, std::numeric_limits<double>::infinity());
     frame_buffer_.assign(width_ * height_, 0x000000);
+}
+
+void Renderer::SetWindow(uint32_t width, uint32_t height) {
+    width_ = width;
+    height_ = height;
 }
 
 void Renderer::SetProjectionMatrix(double fov, double aspect, double near, double far) {
@@ -19,7 +24,12 @@ void Renderer::SetProjectionMatrix(double fov, double aspect, double near, doubl
     projection_matrix_(3, 2) = -1.0;
 }
 
-void Renderer::Rasterize(World scene) {
+void Renderer::Render(const World& scene) {
+    Rasterize(scene);
+    Show();
+}
+
+void Renderer::Rasterize(const World& scene) {
     for (const auto& obj : scene.objects_) {
         for (const auto& tr : obj.object_) {
             const Eigen::Vector4d p0 = ProjectVertex(tr.a);

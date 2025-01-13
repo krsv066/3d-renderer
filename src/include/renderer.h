@@ -1,6 +1,7 @@
 #pragma once
 
 #include "object.h"
+#include "world.h"
 #include <Eigen/Dense>
 #include <cstdint>
 #include <vector>
@@ -13,7 +14,7 @@ public:
 
     void SetProjectionMatrix(double fov, double aspect, double near, double far);
 
-    void Rasterize(Object obj);
+    void Rasterize(World scene);
 
     void Show() const;
 
@@ -28,5 +29,6 @@ private:
 
     inline int GetBufferIndex(int x, int y) const;
 
-    inline double EdgeFunction(double x0, double y0, double x1, double y1, double x, double y) const;
+    inline double EdgeFunction(double x0, double y0, double x1, double y1, double x,
+                               double y) const;
 };

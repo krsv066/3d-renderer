@@ -28,6 +28,7 @@ add_executable(
     renderer
     src/main.cpp
     src/renderer/renderer.cpp
+    src/scene/world.cpp
     src/scene/object.cpp
 )
 

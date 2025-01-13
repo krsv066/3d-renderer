@@ -20,5 +20,5 @@ public:
     }
 
 private:
-    std::vector<Triangle> object_;
+    std::vector<Triangle> object_;  // TODO: Ax + v
 };

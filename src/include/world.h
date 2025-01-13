@@ -4,6 +4,8 @@
 #include <vector>
 
 class World {
+    friend class Renderer;
+
 public:
     World(std::initializer_list<Object> list);
 

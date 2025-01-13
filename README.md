@@ -4,7 +4,7 @@
 git checkout dev
 mkdir build
 cd build
-cmake ..
+cmake -DCMAKE_CXX_COMPILER=clang++ ..
 make
 ./renderer
 ```

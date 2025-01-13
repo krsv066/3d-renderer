@@ -1,16 +1,28 @@
-cmake_minimum_required(VERSION 3.10)
-project(renderer)
+cmake_minimum_required(VERSION 3.28)
+project(renderer LANGUAGES CXX)
 
-set(CMAKE_CXX_COMPILER "clang++")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall -Wextra")
-set(SFML_DIR "src/lib/SFML/lib/cmake/SFML")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-include_directories(
-    src/include
-    src/lib/eigen
-    src/lib/SFML/include
-)
+include_directories(src/include)
+
+include(FetchContent)
+FetchContent_Declare(SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML.git
+    GIT_TAG 3.0.0
+    GIT_SHALLOW ON
+    EXCLUDE_FROM_ALL
+    SYSTEM)
+FetchContent_MakeAvailable(SFML)
+
+include(FetchContent)
+FetchContent_Declare(Eigen
+    GIT_REPOSITORY https://gitlab.com/libeigen/eigen
+    GIT_SHALLOW ON
+    EXCLUDE_FROM_ALL
+    SYSTEM)
+FetchContent_MakeAvailable(Eigen)
 
 add_executable(
     renderer
@@ -19,5 +31,4 @@ add_executable(
     src/scene/object.cpp
 )
 
-find_package(SFML 3 REQUIRED COMPONENTS Graphics Audio Network)
-target_link_libraries(renderer PRIVATE SFML::Graphics SFML::Audio SFML::Network)
+target_link_libraries(renderer PRIVATE SFML::Graphics Eigen3::Eigen)

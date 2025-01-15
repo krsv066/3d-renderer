@@ -6,7 +6,7 @@
 
 Renderer::Renderer() {
     z_buffer_.assign(width_ * height_, std::numeric_limits<double>::infinity());
-    frame_buffer_.assign(width_ * height_, 0x000000);
+    frame_buffer_.assign(width_ * height_ * 4, 0);
 }
 
 void Renderer::SetWindow(uint32_t width, uint32_t height) {
@@ -62,7 +62,12 @@ void Renderer::Rasterize(const World& scene) {
                         const int index = GetBufferIndex(x, y);
                         if (z < z_buffer_[index]) {
                             z_buffer_[index] = z;
-                            frame_buffer_[index] = color;
+
+                            const size_t pixel_index = index * 4;
+                            frame_buffer_[pixel_index] = (color >> 16) & 0xFF;
+                            frame_buffer_[pixel_index + 1] = (color >> 8) & 0xFF;
+                            frame_buffer_[pixel_index + 2] = color & 0xFF;
+                            frame_buffer_[pixel_index + 3] = 0xFF;
                         }
                     }
                 }
@@ -73,21 +78,8 @@ void Renderer::Rasterize(const World& scene) {
 
 void Renderer::Show() const {
     sf::RenderWindow window(sf::VideoMode({width_, height_}), "3d renderer");
-    sf::Image image({width_, height_}, sf::Color::Black);
-
-    for (uint32_t y = 0; y < height_; ++y) {
-        for (uint32_t x = 0; x < width_; ++x) {
-            int index = GetBufferIndex(x, y);
-            uint32_t color = frame_buffer_[index];
-            sf::Color pixel((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);
-            image.setPixel({x, y}, pixel);
-        }
-    }
-
-    sf::Texture texture;
-    if (!texture.loadFromImage(image)) {
-        throw std::runtime_error("Failed to load texture");
-    }
+    sf::Texture texture(sf::Vector2u(width_, height_));
+    texture.update(frame_buffer_.data());
     sf::Sprite sprite(texture);
 
     while (window.isOpen()) {

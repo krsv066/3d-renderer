@@ -20,7 +20,7 @@ private:
     uint32_t width_;
     uint32_t height_;
     std::vector<double> z_buffer_;
-    std::vector<uint32_t> frame_buffer_;
+    std::vector<uint8_t> frame_buffer_;
     Eigen::Matrix4d projection_matrix_;
 
     void Rasterize(const World& scene);

@@ -32,10 +32,9 @@ void Renderer::Render(const World& scene) {
 void Renderer::Rasterize(const World& scene) {
     for (const auto& obj : scene.objects_) {
         for (const auto& tr : obj.object_) {
-
-            const Eigen::Vector4d p0 = ProjectVertex(tr.a);
-            const Eigen::Vector4d p1 = ProjectVertex(tr.b);
-            const Eigen::Vector4d p2 = ProjectVertex(tr.c);
+            const Eigen::Vector4d p0 = ProjectVertex(obj.rotation_ * tr.a + obj.translation_);
+            const Eigen::Vector4d p1 = ProjectVertex(obj.rotation_ * tr.b + obj.translation_);
+            const Eigen::Vector4d p2 = ProjectVertex(obj.rotation_ * tr.c + obj.translation_);
             const uint32_t color = tr.color;
 
             /* clang-format off */

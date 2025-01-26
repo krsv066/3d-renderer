@@ -29,6 +29,8 @@ private:
 
     Eigen::Vector4d ProjectVertex(const Eigen::Vector3d& p) const;
 
+    inline Eigen::Vector3d GetGlobalCoordinates(const Object& obj, const Eigen::Vector3d& p) const;
+
     inline int GetBufferIndex(int x, int y) const;
 
     inline double EdgeFunction(double x0, double y0, double x1, double y1, double x,

@@ -32,9 +32,9 @@ void Renderer::Render(const World& scene) {
 void Renderer::Rasterize(const World& scene) {
     for (const auto& obj : scene.objects_) {
         for (const auto& tr : obj.object_) {
-            const Eigen::Vector4d p0 = ProjectVertex(obj.rotation_ * tr.a + obj.translation_);
-            const Eigen::Vector4d p1 = ProjectVertex(obj.rotation_ * tr.b + obj.translation_);
-            const Eigen::Vector4d p2 = ProjectVertex(obj.rotation_ * tr.c + obj.translation_);
+            const Eigen::Vector4d p0 = ProjectVertex(GetGlobalCoordinates(obj, tr.a));
+            const Eigen::Vector4d p1 = ProjectVertex(GetGlobalCoordinates(obj, tr.b));
+            const Eigen::Vector4d p2 = ProjectVertex(GetGlobalCoordinates(obj, tr.c));
             const uint32_t color = tr.color;
 
             /* clang-format off */
@@ -109,6 +109,10 @@ Eigen::Vector4d Renderer::ProjectVertex(const Eigen::Vector3d& p) const {
     projected.y() = (projected.y() + 1.0) * height_ * 0.5;
 
     return projected;
+}
+
+Eigen::Vector3d Renderer::GetGlobalCoordinates(const Object& obj, const Eigen::Vector3d& p) const {
+    return obj.rotation_ * p + obj.translation_;
 }
 
 int Renderer::GetBufferIndex(int x, int y) const {

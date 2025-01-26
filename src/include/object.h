@@ -7,7 +7,9 @@ class Object {
     friend class Renderer;
 
 public:
-    Object(std::initializer_list<Triangle> list);
+    Object(std::initializer_list<Triangle> list,
+           const Eigen::Matrix3d &rotation = Eigen::Matrix3d::Identity(),
+           const Eigen::Vector3d &translation = Eigen::Vector3d::Zero());
 
     void AddTriangle(const Triangle &t);
 
@@ -20,5 +22,7 @@ public:
     }
 
 private:
-    std::vector<Triangle> object_;  // TODO: Ax + v
+    std::vector<Triangle> object_;
+    Eigen::Matrix3d rotation_;
+    Eigen::Vector3d translation_;
 };

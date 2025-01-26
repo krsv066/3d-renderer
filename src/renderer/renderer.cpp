@@ -26,12 +26,13 @@ void Renderer::SetProjectionMatrix(double fov, double aspect, double near, doubl
 
 void Renderer::Render(const World& scene) {
     Rasterize(scene);
-    Show();
+    ShowFrame();
 }
 
 void Renderer::Rasterize(const World& scene) {
     for (const auto& obj : scene.objects_) {
         for (const auto& tr : obj.object_) {
+
             const Eigen::Vector4d p0 = ProjectVertex(tr.a);
             const Eigen::Vector4d p1 = ProjectVertex(tr.b);
             const Eigen::Vector4d p2 = ProjectVertex(tr.c);
@@ -76,7 +77,7 @@ void Renderer::Rasterize(const World& scene) {
     }
 }
 
-void Renderer::Show() const {
+void Renderer::ShowFrame() const {
     sf::RenderWindow window(sf::VideoMode({width_, height_}), "3d renderer");
     sf::Texture texture(sf::Vector2u(width_, height_));
     texture.update(frame_buffer_.data());

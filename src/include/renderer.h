@@ -25,7 +25,7 @@ private:
 
     void Rasterize(const World& scene);
 
-    void Show() const;
+    void ShowFrame() const;
 
     Eigen::Vector4d ProjectVertex(const Eigen::Vector3d& p) const;
 

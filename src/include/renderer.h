@@ -8,7 +8,7 @@
 
 class Renderer {
 public:
-    Renderer();  // TODO: asserts
+    Renderer();
 
     void SetWindow(uint32_t width, uint32_t height);
 
@@ -22,6 +22,18 @@ private:
     std::vector<double> z_buffer_;
     std::vector<uint8_t> frame_buffer_;
     Eigen::Matrix4d projection_matrix_;
+
+    void RenderFrame(const World& scene);
+
+    void RenderObject(const Object& obj);
+
+    void RenderTriangle(const Object& obj, const Triangle& triangle);
+
+    void ProcessPixel(int x, int y, const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
+                      const Eigen::Vector4d& p2, double area, uint32_t color);
+
+    void UpdatePixel(int x, int y, double w0, double w1, double w2, const Eigen::Vector4d& p0,
+                     const Eigen::Vector4d& p1, const Eigen::Vector4d& p2, uint32_t color);
 
     void Rasterize(const World& scene);
 

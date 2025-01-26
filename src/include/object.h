@@ -8,8 +8,8 @@ class Object {
 
 public:
     Object(std::initializer_list<Triangle> list,
-           const Eigen::Matrix3d &rotation = Eigen::Matrix3d::Identity(),
-           const Eigen::Vector3d &translation = Eigen::Vector3d::Zero());
+           const Eigen::Vector3d &translation = Eigen::Vector3d::Zero(),
+           const Eigen::Matrix3d &rotation = Eigen::Matrix3d::Identity());
 
     void AddTriangle(const Triangle &t);
 
@@ -23,6 +23,6 @@ public:
 
 private:
     std::vector<Triangle> object_;
-    Eigen::Matrix3d rotation_;
     Eigen::Vector3d translation_;
+    Eigen::Matrix3d rotation_;
 };

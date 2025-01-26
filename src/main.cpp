@@ -3,12 +3,13 @@
 #include <cmath>
 
 int main() {
-    Triangle t1 = {{1.0, 1.0, -2.5}, {-0.5, 0.5, -2.5}, {0.5, -0.5, -2.5}, 0xFF0000};   // Red
-    Triangle t2 = {{1.0, 1.0, -3.5}, {-0.5, 0.5, -4.5}, {-0.2, -0.4, -1.5}, 0x00FF00};  // Green
-    Object obj1{t1, t2};
-    Triangle t3 = {{-0.4, -1.0, -5.8}, {0.9, 0.0, -1.5}, {-0.8, -0.1, -1.5}, 0x0000FF};  // Blue
-    Object obj2{t3};
-    World scene{obj1, obj2};
+    Triangle tr = {{1.0, 1.0, 0.0}, {-1.0, 1.0, 0.0}, {0.0, -1.0, 0.0}, 0xFF0000};   // Red
+    Eigen::Vector3d translation = {0.0, 0.0, -3.0};
+    double angle = M_PI / 4.0;
+    Eigen::Matrix3d rotation = Eigen::AngleAxisd(angle, Eigen::Vector3d::UnitZ()).toRotationMatrix();
+    
+    Object obj{{tr}, translation, rotation};
+    World scene{obj};
 
     Renderer renderer;
     uint32_t width = 1280;

@@ -1,8 +1,8 @@
 #include "object.h"
 
-Object::Object(std::initializer_list<Triangle> list, const Eigen::Matrix3d &rotation,
-               const Eigen::Vector3d &translation)
-    : object_(list), rotation_(rotation), translation_(translation) {
+Object::Object(std::initializer_list<Triangle> list, const Eigen::Vector3d &translation,
+               const Eigen::Matrix3d &rotation)
+    : object_(list), translation_(translation), rotation_(rotation) {
 }
 
 void Object::AddTriangle(const Triangle &t) {

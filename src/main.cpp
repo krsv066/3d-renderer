@@ -3,7 +3,7 @@
 #include <cmath>
 
 int main() {
-    Triangle tr = {{1.0, 1.0, 0.0}, {-1.0, 1.0, 0.0}, {0.0, -1.0, 0.0}, 0xFF0000};  // Red
+    Triangle tr = {{1.0, 1.0, 0.0}, {-1.0, 1.0, 0.0}, {0.0, -1.0, 0.0}, 0xFF00FF};
     Eigen::Vector3d translation = {0.0, 0.0, -3.0};
     double angle = M_PI / 4.0;
     Eigen::Matrix3d rotation =

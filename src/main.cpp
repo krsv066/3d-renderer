@@ -13,6 +13,7 @@ int main() {
     World scene{obj};
 
     Renderer renderer;
+    renderer.SetRenderMode(RenderMode::WIREFRAME);
     uint32_t width = 1280;
     uint32_t height = 720;
     renderer.SetWindow(width, height);

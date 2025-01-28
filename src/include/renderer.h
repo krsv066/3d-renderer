@@ -6,6 +6,8 @@
 #include <cstdint>
 #include <vector>
 
+enum class RenderMode { FILLED, WIREFRAME };
+
 class Renderer {
 public:
     Renderer();
@@ -16,18 +18,26 @@ public:
 
     void Render(const World& scene);
 
+    void SetRenderMode(RenderMode mode);
+
 private:
     uint32_t width_;
     uint32_t height_;
     std::vector<double> z_buffer_;
     std::vector<uint8_t> frame_buffer_;
     Eigen::Matrix4d projection_matrix_;
+    RenderMode render_mode_ = RenderMode::FILLED;
 
     void RenderFrame(const World& scene);
 
     void RenderObject(const Object& obj);
 
     void RenderTriangle(const Object& obj, const Triangle& triangle);
+
+    void RenderTriangleWireframe(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
+                                 const Eigen::Vector4d& p2, uint32_t color);
+
+    void DrawLine(int x0, int y0, int x1, int y1, uint32_t color);
 
     void ProcessPixel(int x, int y, const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
                       const Eigen::Vector4d& p2, double area, uint32_t color);

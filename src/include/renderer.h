@@ -2,6 +2,7 @@
 
 #include "camera.h"
 #include "object.h"
+#include "screen.h"
 #include "world.h"
 #include <Eigen/Dense>
 #include <cstdint>
@@ -11,19 +12,14 @@ enum class RenderMode { FILLED, WIREFRAME };
 
 class Renderer {
 public:
-    Renderer(const Camera& camera, const World& scene);
-
-    void SetWindow(uint32_t width, uint32_t height);
-
-    void SetRenderMode(RenderMode mode);
+    Renderer(const Camera& camera, const World& scene, const Screen& screen, RenderMode mode);
 
     void Render();
 
 private:
     Camera camera_;
     World scene_;
-    uint32_t width_;
-    uint32_t height_;
+    Screen screen_;
     std::vector<double> z_buffer_;
     std::vector<uint8_t> frame_buffer_;
     RenderMode render_mode_ = RenderMode::FILLED;

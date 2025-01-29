@@ -1,21 +1,15 @@
 #include "renderer.h"
 #include "object.h"
+#include "screen.h"
 #include "world.h"
 #include <Eigen/Dense>
 #include <SFML/Graphics.hpp>
 
-Renderer::Renderer(const Camera& camera, const World& scene) : camera_(camera), scene_(scene) {
-}
-
-void Renderer::SetWindow(uint32_t width, uint32_t height) {
-    width_ = width;
-    height_ = height;
-    z_buffer_.assign(width_ * height_, std::numeric_limits<double>::infinity());
-    frame_buffer_.assign(width_ * height_ * 4, 0);
-}
-
-void Renderer::SetRenderMode(RenderMode mode) {
-    render_mode_ = mode;
+Renderer::Renderer(const Camera& camera, const World& scene, const Screen& screen, RenderMode mode)
+    : camera_(camera), scene_(scene), screen_(screen), render_mode_(mode) {
+    z_buffer_.assign(screen_.GetWidth() * screen_.GetHeight(),
+                     std::numeric_limits<double>::infinity());
+    frame_buffer_.assign(screen_.GetWidth() * screen_.GetHeight() * 4, 0);
 }
 
 void Renderer::Render() {
@@ -46,10 +40,10 @@ void Renderer::RenderTriangle(const Object& obj, const Triangle& triangle) {
     }
 
     const int min_x = std::max(0, static_cast<int>(std::floor(std::min({p0.x(), p1.x(), p2.x()}))));
-    const int max_x = std::min(static_cast<int>(width_) - 1,
+    const int max_x = std::min(static_cast<int>(screen_.GetWidth()) - 1,
                                static_cast<int>(std::ceil(std::max({p0.x(), p1.x(), p2.x()}))));
     const int min_y = std::max(0, static_cast<int>(std::floor(std::min({p0.y(), p1.y(), p2.y()}))));
-    const int max_y = std::min(static_cast<int>(height_) - 1,
+    const int max_y = std::min(static_cast<int>(screen_.GetHeight()) - 1,
                                static_cast<int>(std::ceil(std::max({p0.y(), p1.y(), p2.y()}))));
 
     const double area = EdgeFunction(p0.x(), p0.y(), p1.x(), p1.y(), p2.x(), p2.y());
@@ -89,7 +83,8 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color) {
 
     for (int x = x0; x <= x1; ++x) {
         if (steep) {
-            if (y >= 0 && y < static_cast<int>(width_) && x >= 0 && x < static_cast<int>(height_)) {
+            if (y >= 0 && y < static_cast<int>(screen_.GetWidth()) && x >= 0 &&
+                x < static_cast<int>(screen_.GetHeight())) {
                 const int index = GetBufferIndex(y, x) * 4;
                 frame_buffer_[index] = (color >> 16) & 0xFF;
                 frame_buffer_[index + 1] = (color >> 8) & 0xFF;
@@ -97,7 +92,8 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color) {
                 frame_buffer_[index + 3] = 0xFF;
             }
         } else {
-            if (x >= 0 && x < static_cast<int>(width_) && y >= 0 && y < static_cast<int>(height_)) {
+            if (x >= 0 && x < static_cast<int>(screen_.GetWidth()) && y >= 0 &&
+                y < static_cast<int>(screen_.GetHeight())) {
                 const int index = GetBufferIndex(x, y) * 4;
                 frame_buffer_[index] = (color >> 16) & 0xFF;
                 frame_buffer_[index + 1] = (color >> 8) & 0xFF;
@@ -141,8 +137,9 @@ void Renderer::UpdatePixel(int x, int y, double w0, double w1, double w2, const 
 }
 
 void Renderer::ShowFrame() const {
-    sf::RenderWindow window(sf::VideoMode({width_, height_}), "3d renderer");
-    sf::Texture texture(sf::Vector2u(width_, height_));
+    sf::RenderWindow window(sf::VideoMode({screen_.GetWidth(), screen_.GetHeight()}),
+                            "3d renderer");
+    sf::Texture texture(sf::Vector2u(screen_.GetWidth(), screen_.GetHeight()));
     texture.update(frame_buffer_.data());
     sf::Sprite sprite(texture);
 
@@ -169,8 +166,8 @@ Eigen::Vector4d Renderer::ProjectVertex(const Eigen::Vector3d& p) const {
         projected.z() /= projected.w();
     }
 
-    projected.x() = (projected.x() + 1.0) * width_ * 0.5;
-    projected.y() = (projected.y() + 1.0) * height_ * 0.5;
+    projected.x() = (projected.x() + 1.0) * screen_.GetWidth() * 0.5;
+    projected.y() = (projected.y() + 1.0) * screen_.GetHeight() * 0.5;
 
     return projected;
 }
@@ -180,7 +177,7 @@ Eigen::Vector3d Renderer::GetGlobalCoordinates(const Object& obj, const Eigen::V
 }
 
 int Renderer::GetBufferIndex(int x, int y) const {
-    return (height_ - y) * width_ + x;
+    return (screen_.GetHeight() - y) * screen_.GetWidth() + x;
 }
 
 double Renderer::EdgeFunction(double x0, double y0, double x1, double y1, double x,

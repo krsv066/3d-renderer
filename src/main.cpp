@@ -1,5 +1,6 @@
 #include "obj_parser.h"
 #include "renderer.h"
+#include "screen.h"
 #include "world.h"
 
 int main() {
@@ -14,6 +15,7 @@ int main() {
 
     uint32_t width = 1280;
     uint32_t height = 720;
+    Screen screen(width, height);
 
     double fov = 60.0 * M_PI / 180.0;
     double aspect = static_cast<double>(width) / height;
@@ -21,9 +23,9 @@ int main() {
     double far = 100.0;
     Camera camera(fov, aspect, near, far);
 
-    Renderer renderer(camera, scene);
-    renderer.SetRenderMode(RenderMode::WIREFRAME);
-    renderer.SetWindow(width, height);
+    RenderMode mode = RenderMode::WIREFRAME;
+    Renderer renderer(camera, scene, screen, mode);
+
     renderer.Render();
 
     return 0;

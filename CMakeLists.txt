@@ -44,6 +44,7 @@ add_executable(
     src/renderer/renderer.cpp
     src/scene/object.cpp
     src/scene/world.cpp
+    src/screen/screen.cpp
 )
 
 target_link_libraries(renderer PRIVATE SFML::Graphics Eigen3::Eigen)

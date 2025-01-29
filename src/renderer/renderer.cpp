@@ -4,14 +4,11 @@
 #include <Eigen/Dense>
 #include <SFML/Graphics.hpp>
 
-Renderer::Renderer() {
-    z_buffer_.assign(width_ * height_, std::numeric_limits<double>::infinity());
-    frame_buffer_.assign(width_ * height_ * 4, 0);
-}
-
 void Renderer::SetWindow(uint32_t width, uint32_t height) {
     width_ = width;
     height_ = height;
+    z_buffer_.assign(width_ * height_, std::numeric_limits<double>::infinity());
+    frame_buffer_.assign(width_ * height_ * 4, 0);
 }
 
 void Renderer::SetProjectionMatrix(double fov, double aspect, double near, double far) {

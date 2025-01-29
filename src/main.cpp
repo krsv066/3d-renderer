@@ -1,7 +1,9 @@
 #include "renderer.h"
 #include "world.h"
 #include "obj_parser.h"
+#include <cassert>
 #include <cmath>
+#include <cstdint>
 
 int main() {
     Eigen::Vector3d translation(0.0, 0.0, -3.0);

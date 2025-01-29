@@ -39,10 +39,11 @@ FetchContent_MakeAvailable(Eigen)
 add_executable(
     renderer
     src/main.cpp
-    src/renderer/renderer.cpp
-    src/scene/world.cpp
-    src/scene/object.cpp
+    src/camera/camera.cpp
     src/parser/obj_parser.cpp
+    src/renderer/renderer.cpp
+    src/scene/object.cpp
+    src/scene/world.cpp
 )
 
 target_link_libraries(renderer PRIVATE SFML::Graphics Eigen3::Eigen)

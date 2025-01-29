@@ -97,7 +97,7 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color) {
     int error2 = 0;
     int y = y0;
 
-    for (int x = x0; x <= x1; x++) {
+    for (int x = x0; x <= x1; ++x) {
         if (steep) {
             if (y >= 0 && y < static_cast<int>(width_) && x >= 0 && x < static_cast<int>(height_)) {
                 const int index = GetBufferIndex(y, x) * 4;
@@ -190,7 +190,7 @@ Eigen::Vector3d Renderer::GetGlobalCoordinates(const Object& obj, const Eigen::V
 }
 
 int Renderer::GetBufferIndex(int x, int y) const {
-    return y * width_ + x;
+    return (height_ - y) * width_ + x;
 }
 
 double Renderer::EdgeFunction(double x0, double y0, double x1, double y1, double x,

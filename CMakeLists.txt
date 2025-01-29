@@ -31,6 +31,7 @@ add_executable(
     src/renderer/renderer.cpp
     src/scene/world.cpp
     src/scene/object.cpp
+    src/parser/obj_parser.cpp
 )
 
 target_link_libraries(renderer PRIVATE SFML::Graphics Eigen3::Eigen)

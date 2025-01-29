@@ -1,16 +1,17 @@
 #include "renderer.h"
 #include "world.h"
+#include "obj_parser.h"
 #include <cmath>
 
 int main() {
-    Triangle tr = {{1.0, 1.0, 0.0}, {-1.0, 1.0, 0.0}, {0.0, -1.0, 0.0}, 0xFF00FF};
-    Eigen::Vector3d translation = {0.0, 0.0, -3.0};
-    double angle = M_PI / 4.0;
+    Eigen::Vector3d translation(0.0, 0.0, -3.0);
+    double angle = M_PI / 8.0;
     Eigen::Matrix3d rotation =
-        Eigen::AngleAxisd(angle, Eigen::Vector3d::UnitZ()).toRotationMatrix();
+        Eigen::AngleAxisd(angle, Eigen::Vector3d::UnitX()).toRotationMatrix() *
+        Eigen::AngleAxisd(angle, Eigen::Vector3d::UnitY()).toRotationMatrix();
 
-    Object obj{{tr}, translation, rotation};
-    World scene{obj};
+    Object cube = ObjParser::LoadObj("../src/models/cube.obj", translation, rotation, 0xFF00FF);
+    World scene{cube};
 
     Renderer renderer;
     renderer.SetRenderMode(RenderMode::WIREFRAME);

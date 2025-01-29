@@ -11,6 +11,10 @@ public:
            const Eigen::Vector3d &translation = Eigen::Vector3d::Zero(),
            const Eigen::Matrix3d &rotation = Eigen::Matrix3d::Identity());
 
+    Object(const std::vector<Triangle> &triangles,
+           const Eigen::Vector3d &translation = Eigen::Vector3d::Zero(),
+           const Eigen::Matrix3d &rotation = Eigen::Matrix3d::Identity());
+
     void AddTriangle(const Triangle &t);
 
     template <typename... Args>

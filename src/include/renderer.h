@@ -1,5 +1,6 @@
 #pragma once
 
+#include "camera.h"
 #include "object.h"
 #include "world.h"
 #include <Eigen/Dense>
@@ -10,25 +11,24 @@ enum class RenderMode { FILLED, WIREFRAME };
 
 class Renderer {
 public:
-    Renderer() = default;
+    Renderer(const Camera& camera, const World& scene);
 
     void SetWindow(uint32_t width, uint32_t height);
 
-    void SetProjectionMatrix(double fov, double aspect, double near, double far);
-
-    void Render(const World& scene);
-
     void SetRenderMode(RenderMode mode);
 
+    void Render();
+
 private:
+    Camera camera_;
+    World scene_;
     uint32_t width_;
     uint32_t height_;
     std::vector<double> z_buffer_;
     std::vector<uint8_t> frame_buffer_;
-    Eigen::Matrix4d projection_matrix_;
     RenderMode render_mode_ = RenderMode::FILLED;
 
-    void RenderFrame(const World& scene);
+    void RenderFrame();
 
     void RenderObject(const Object& obj);
 

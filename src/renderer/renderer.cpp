@@ -4,6 +4,9 @@
 #include <Eigen/Dense>
 #include <SFML/Graphics.hpp>
 
+Renderer::Renderer(const Camera& camera, const World& scene) : camera_(camera), scene_(scene) {
+}
+
 void Renderer::SetWindow(uint32_t width, uint32_t height) {
     width_ = width;
     height_ = height;
@@ -11,27 +14,17 @@ void Renderer::SetWindow(uint32_t width, uint32_t height) {
     frame_buffer_.assign(width_ * height_ * 4, 0);
 }
 
-void Renderer::SetProjectionMatrix(double fov, double aspect, double near, double far) {
-    const double tan_half_fov = std::tan(fov / 2.0);
-    projection_matrix_ = Eigen::Matrix4d::Zero();
-    projection_matrix_(0, 0) = 1.0 / (aspect * tan_half_fov);
-    projection_matrix_(1, 1) = 1.0 / tan_half_fov;
-    projection_matrix_(2, 2) = -(far + near) / (far - near);
-    projection_matrix_(2, 3) = -(2.0 * far * near) / (far - near);
-    projection_matrix_(3, 2) = -1.0;
-}
-
 void Renderer::SetRenderMode(RenderMode mode) {
     render_mode_ = mode;
 }
 
-void Renderer::Render(const World& scene) {
-    RenderFrame(scene);
+void Renderer::Render() {
+    RenderFrame();
     ShowFrame();
 }
 
-void Renderer::RenderFrame(const World& scene) {
-    for (const auto& obj : scene.objects_) {
+void Renderer::RenderFrame() {
+    for (const auto& obj : scene_.objects_) {
         RenderObject(obj);
     }
 }
@@ -168,7 +161,7 @@ void Renderer::ShowFrame() const {
 
 Eigen::Vector4d Renderer::ProjectVertex(const Eigen::Vector3d& p) const {
     Eigen::Vector4d pos(p.x(), p.y(), p.z(), 1.0);
-    Eigen::Vector4d projected = projection_matrix_ * pos;
+    Eigen::Vector4d projected = camera_.GetProjectionMatrix() * pos;
 
     if (projected.w() != 0) {
         projected.x() /= projected.w();

@@ -34,11 +34,25 @@ void Renderer::RenderTriangle(const Object& obj, const Triangle& triangle) {
     const Eigen::Vector4d p1 = ProjectVertex(GetGlobalCoordinates(obj, triangle.b));
     const Eigen::Vector4d p2 = ProjectVertex(GetGlobalCoordinates(obj, triangle.c));
 
-    if (render_mode_ == RenderMode::WIREFRAME) {
-        RenderTriangleWireframe(p0, p1, p2, triangle.color);
-        return;
+    switch (render_mode_) {
+        case RenderMode::WIREFRAME:
+            RenderTriangleWireframe(p0, p1, p2, triangle.color);
+            break;
+        case RenderMode::FILLED:
+            RenderTriangleFilled(p0, p1, p2, triangle.color);
+            break;
     }
+}
 
+void Renderer::RenderTriangleWireframe(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
+                                       const Eigen::Vector4d& p2, uint32_t color) {
+    DrawLine(p0.x(), p0.y(), p1.x(), p1.y(), color);
+    DrawLine(p1.x(), p1.y(), p2.x(), p2.y(), color);
+    DrawLine(p2.x(), p2.y(), p0.x(), p0.y(), color);
+}
+
+void Renderer::RenderTriangleFilled(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
+                                    const Eigen::Vector4d& p2, uint32_t color) {
     const int min_x = std::max(0, static_cast<int>(std::floor(std::min({p0.x(), p1.x(), p2.x()}))));
     const int max_x = std::min(static_cast<int>(screen_.GetWidth()) - 1,
                                static_cast<int>(std::ceil(std::max({p0.x(), p1.x(), p2.x()}))));
@@ -50,16 +64,9 @@ void Renderer::RenderTriangle(const Object& obj, const Triangle& triangle) {
 
     for (int y = min_y; y <= max_y; ++y) {
         for (int x = min_x; x <= max_x; ++x) {
-            ProcessPixel(x, y, p0, p1, p2, area, triangle.color);
+            ProcessPixel(x, y, p0, p1, p2, area, color);
         }
     }
-}
-
-void Renderer::RenderTriangleWireframe(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
-                                       const Eigen::Vector4d& p2, uint32_t color) {
-    DrawLine(p0.x(), p0.y(), p1.x(), p1.y(), color);
-    DrawLine(p1.x(), p1.y(), p2.x(), p2.y(), color);
-    DrawLine(p2.x(), p2.y(), p0.x(), p0.y(), color);
 }
 
 void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color) {

@@ -33,6 +33,9 @@ private:
     void RenderTriangleWireframe(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
                                  const Eigen::Vector4d& p2, uint32_t color);
 
+    void RenderTriangleFilled(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
+                              const Eigen::Vector4d& p2, uint32_t color);
+
     void DrawLine(int x0, int y0, int x1, int y1, uint32_t color);
 
     void ProcessPixel(int x, int y, const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,

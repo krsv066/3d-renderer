@@ -4,6 +4,8 @@
 #include <cstdint>
 
 struct Triangle {
-    Eigen::Vector3d a, b, c;
+    Eigen::Vector3d a;
+    Eigen::Vector3d b;
+    Eigen::Vector3d c;
     uint32_t color;
 };

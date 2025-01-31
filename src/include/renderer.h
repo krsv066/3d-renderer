@@ -5,14 +5,16 @@
 #include "screen.h"
 #include "world.h"
 #include <Eigen/Dense>
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 
-enum class RenderMode { FILLED, WIREFRAME };
-
 class Renderer {
 public:
-    Renderer(const Camera& camera, const World& scene, const Screen& screen, RenderMode mode);
+    enum class Mode : uint8_t { Filled, Wireframe };
+
+    Renderer(const Camera& camera, const World& scene, const Screen& screen,
+             Mode mod = Mode::Wireframe);
 
     void Render();
 
@@ -22,7 +24,7 @@ private:
     Screen screen_;
     std::vector<double> z_buffer_;
     std::vector<uint8_t> frame_buffer_;
-    RenderMode render_mode_ = RenderMode::FILLED;
+    Mode render_mode_;
 
     void RenderFrame();
 

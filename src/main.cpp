@@ -23,7 +23,7 @@ int main() {
     double far = 100.0;
     Camera camera(fov, aspect, near, far);
 
-    RenderMode mode = RenderMode::WIREFRAME;
+    Renderer::Mode mode = Renderer::Mode::Wireframe;
     Renderer renderer(camera, scene, screen, mode);
 
     renderer.Render();

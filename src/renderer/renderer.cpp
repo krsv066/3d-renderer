@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 #include <SFML/Graphics.hpp>
 
-Renderer::Renderer(const Camera& camera, const World& scene, const Screen& screen, RenderMode mode)
+Renderer::Renderer(const Camera& camera, const World& scene, const Screen& screen, Mode mode)
     : camera_(camera), scene_(scene), screen_(screen), render_mode_(mode) {
     z_buffer_.assign(screen_.GetWidth() * screen_.GetHeight(),
                      std::numeric_limits<double>::infinity());
@@ -35,10 +35,10 @@ void Renderer::RenderTriangle(const Object& obj, const Triangle& triangle) {
     const Eigen::Vector4d p2 = ProjectVertex(GetGlobalCoordinates(obj, triangle.c));
 
     switch (render_mode_) {
-        case RenderMode::WIREFRAME:
+        case Mode::Wireframe:
             RenderTriangleWireframe(p0, p1, p2, triangle.color);
             break;
-        case RenderMode::FILLED:
+        case Mode::Filled:
             RenderTriangleFilled(p0, p1, p2, triangle.color);
             break;
     }

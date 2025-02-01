@@ -15,11 +15,8 @@ int main() {
 
     Screen screen(Width{1280}, Height{720});
 
-    double fov = 60.0 * M_PI / 180.0;
-    double aspect = static_cast<double>(1280) / 720;
-    double near = 0.1;
-    double far = 100.0;
-    Camera camera(fov, aspect, near, far);
+    Camera camera(Fov{60.0 * M_PI / 180.0}, Aspect{static_cast<double>(1280) / 720}, Near{0.1},
+                  Far{100.0});
 
     Renderer::Mode mode = Renderer::Mode::Wireframe;
     Renderer renderer(camera, scene, screen, mode);

@@ -2,15 +2,18 @@
 
 #include <cstdint>
 
+enum Width : uint32_t;
+enum Height : uint32_t;
+
 class Screen {
 public:
-    Screen(uint32_t width, uint32_t height);
+    Screen(Width width, Height height);
 
     uint32_t GetWidth() const;
 
     uint32_t GetHeight() const;
 
 private:
-    uint32_t width_;
+    Width width_;
     uint32_t height_;
 };

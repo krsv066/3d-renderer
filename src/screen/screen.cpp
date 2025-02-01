@@ -2,7 +2,7 @@
 
 #include "screen.h"
 
-Screen::Screen(uint32_t width, uint32_t height) : width_(width), height_(height) {
+Screen::Screen(Width width, Height height) : width_(width), height_(height) {
 }
 
 uint32_t Screen::GetWidth() const {

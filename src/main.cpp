@@ -13,12 +13,10 @@ int main() {
     Object cube = ObjParser::LoadObj("../src/models/cube.obj", translation, rotation, 0xFF00FF);
     World scene{cube};
 
-    uint32_t width = 1280;
-    uint32_t height = 720;
-    Screen screen(width, height);
+    Screen screen(Width{1280}, Height{720});
 
     double fov = 60.0 * M_PI / 180.0;
-    double aspect = static_cast<double>(width) / height;
+    double aspect = static_cast<double>(1280) / 720;
     double near = 0.1;
     double far = 100.0;
     Camera camera(fov, aspect, near, far);

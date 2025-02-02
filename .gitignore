@@ -5,7 +5,6 @@
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
@@ -33,6 +32,7 @@
 
 # Dirs
 build
+debug_build
 .cache
 .DS_Store
 .vscode

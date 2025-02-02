@@ -9,7 +9,3 @@ Object::Object(const std::vector<Triangle> &triangles, const Eigen::Vector3d &tr
                const Eigen::Matrix3d &rotation)
     : object_(triangles), translation_(translation), rotation_(rotation) {
 }
-
-void Object::AddTriangle(const Triangle &t) {
-    object_.push_back(t);
-}

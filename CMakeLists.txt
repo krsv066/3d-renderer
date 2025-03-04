@@ -24,7 +24,14 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     endif()
 endif()
 
-include_directories(src/include)
+include_directories(
+    src/application
+    src/camera
+    src/renderer
+    src/scene
+    src/screen
+    src/utils
+)
 
 include(FetchContent)
 FetchContent_Declare(SFML
@@ -48,12 +55,12 @@ add_executable(
     src/main.cpp
     src/application/application.cpp
     src/camera/camera.cpp
-    src/except/except.cpp
-    src/parser/obj_parser.cpp
     src/renderer/renderer.cpp
     src/scene/object.cpp
     src/scene/world.cpp
     src/screen/screen.cpp
+    src/utils/except.cpp
+    src/utils/obj_parser.cpp
 )
 
 target_link_libraries(renderer PRIVATE SFML::Graphics Eigen3::Eigen)

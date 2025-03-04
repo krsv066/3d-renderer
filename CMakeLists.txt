@@ -48,6 +48,7 @@ add_executable(
     src/main.cpp
     src/application/application.cpp
     src/camera/camera.cpp
+    src/except/except.cpp
     src/parser/obj_parser.cpp
     src/renderer/renderer.cpp
     src/scene/object.cpp

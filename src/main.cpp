@@ -1,13 +1,12 @@
 #include "application.h"
-#include <iostream>
+#include "except.h"
 
 int main() {
     try {
         Application app;
         app.Run();
     } catch (...) {
-        std::cerr << "An unexpected error occurred" << std::endl;
-        return -1;
+        except::React();
     }
 
     return 0;

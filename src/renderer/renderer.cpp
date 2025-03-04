@@ -7,9 +7,6 @@
 
 Renderer::Renderer(const Camera& camera, const World& scene, const Screen& screen, Mode mode)
     : camera_(camera), scene_(scene), screen_(screen), render_mode_(mode) {
-    z_buffer_.assign(screen_.GetWidth() * screen_.GetHeight(),
-                     std::numeric_limits<double>::infinity());
-    frame_buffer_.assign(screen_.GetWidth() * screen_.GetHeight() * 4, 0);
 }
 
 void Renderer::Render() {
@@ -93,19 +90,13 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color) {
             if (y >= 0 && y < static_cast<int>(screen_.GetWidth()) && x >= 0 &&
                 x < static_cast<int>(screen_.GetHeight())) {
                 const int index = GetBufferIndex(y, x) * 4;
-                frame_buffer_[index] = (color >> 16) & 0xFF;
-                frame_buffer_[index + 1] = (color >> 8) & 0xFF;
-                frame_buffer_[index + 2] = color & 0xFF;
-                frame_buffer_[index + 3] = 0xFF;
+                screen_.SetFrameBufferPixel(index, color);
             }
         } else {
             if (x >= 0 && x < static_cast<int>(screen_.GetWidth()) && y >= 0 &&
                 y < static_cast<int>(screen_.GetHeight())) {
                 const int index = GetBufferIndex(x, y) * 4;
-                frame_buffer_[index] = (color >> 16) & 0xFF;
-                frame_buffer_[index + 1] = (color >> 8) & 0xFF;
-                frame_buffer_[index + 2] = color & 0xFF;
-                frame_buffer_[index + 3] = 0xFF;
+                screen_.SetFrameBufferPixel(index, color);
             }
         }
 
@@ -133,13 +124,10 @@ void Renderer::UpdatePixel(int x, int y, double w0, double w1, double w2, const 
     const double z = w0 * p0.z() + w1 * p1.z() + w2 * p2.z();
     const int index = GetBufferIndex(x, y);
 
-    if (z < z_buffer_[index]) {
-        z_buffer_[index] = z;
+    if (z < screen_.GetZBufferDepth(index)) {
+        screen_.SetZBufferDepth(index, z);
         const size_t pixel_index = index * 4;
-        frame_buffer_[pixel_index] = (color >> 16) & 0xFF;
-        frame_buffer_[pixel_index + 1] = (color >> 8) & 0xFF;
-        frame_buffer_[pixel_index + 2] = color & 0xFF;
-        frame_buffer_[pixel_index + 3] = 0xFF;
+        screen_.SetFrameBufferPixel(pixel_index, color);
     }
 }
 
@@ -147,7 +135,7 @@ void Renderer::ShowFrame() const {
     sf::RenderWindow window(sf::VideoMode({screen_.GetWidth(), screen_.GetHeight()}),
                             "3d renderer");
     sf::Texture texture(sf::Vector2u(screen_.GetWidth(), screen_.GetHeight()));
-    texture.update(frame_buffer_.data());
+    texture.update(screen_.GetFrameBuffer());
     sf::Sprite sprite(texture);
 
     while (window.isOpen()) {

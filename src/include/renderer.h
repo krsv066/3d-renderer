@@ -5,9 +5,7 @@
 #include "screen.h"
 #include "world.h"
 #include <Eigen/Dense>
-#include <cstddef>
 #include <cstdint>
-#include <vector>
 
 class Renderer {
 public:
@@ -22,8 +20,6 @@ private:
     Camera camera_;
     World scene_;
     Screen screen_;
-    std::vector<double> z_buffer_;
-    std::vector<uint8_t> frame_buffer_;
     Mode render_mode_;
 
     void RenderFrame();

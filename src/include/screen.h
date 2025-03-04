@@ -9,11 +9,11 @@ class Screen {
 public:
     Screen(Width width, Height height);
 
-    uint32_t GetWidth() const;
+    Width GetWidth() const;
 
-    uint32_t GetHeight() const;
+    Height GetHeight() const;
 
 private:
     Width width_;
-    uint32_t height_;
+    Height height_;
 };

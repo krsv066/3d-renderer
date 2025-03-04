@@ -4,6 +4,9 @@
 #include "renderer.h"
 #include <SFML/Graphics.hpp>
 
+static constexpr Width kWidth{1280};
+static constexpr Height kHeight{720};
+
 Application::Application()
     : renderer_(Renderer::Mode::Wireframe),
       world_{ObjParser::LoadObj(
@@ -11,15 +14,17 @@ Application::Application()
           Eigen::AngleAxisd(M_PI / 8.0, Eigen::Vector3d::UnitX()).toRotationMatrix() *
               Eigen::AngleAxisd(M_PI / 8.0, Eigen::Vector3d::UnitY()).toRotationMatrix(),
           0xFF00FF)},
-      camera_(Fov{60.0 * M_PI / 180.0}, Aspect{1280.0 / 720.0}, Near{0.1}, Far{100.0}) {
+      camera_(Fov{60.0 * M_PI / 180.0}, Aspect{static_cast<double>(kWidth) / kHeight}, Near{0.1},
+              Far{100.0}) {
 }
 
 void Application::Run() {
-    sf::RenderWindow window(sf::VideoMode({1280, 720}), "3D Renderer");
-    sf::Texture texture(sf::Vector2u(1280, 720));
+
+    sf::RenderWindow window(sf::VideoMode({kWidth, kHeight}), "3D Renderer");
+    sf::Texture texture(sf::Vector2u(kWidth, kHeight));
     sf::Sprite sprite(texture);
 
-    Screen screen(Width{1280}, Height{720});
+    Screen screen(kWidth, kHeight);
 
     while (window.isOpen()) {
         while (const std::optional event = window.pollEvent()) {

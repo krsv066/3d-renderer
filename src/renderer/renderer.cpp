@@ -8,29 +8,21 @@
 Renderer::Renderer(Mode mode) : render_mode_(mode) {
 }
 
-Screen Renderer::Render(const World& scene, const Camera& camera, Screen&& screen) {
+Screen Renderer::Render(const World& scene, const Camera& camera, Screen&& screen) const {
     assert(screen.GetWidth() > 0 && screen.GetHeight() > 0);
 
     screen.Clear();
-    RenderFrame(scene, camera, screen);
+    for (const auto& obj : scene.objects_) {
+        for (const auto& triangle : obj.object_) {
+            RenderTriangle(obj, triangle, camera, screen);
+        }
+    }
 
     return std::move(screen);
 }
 
-void Renderer::RenderFrame(const World& scene, const Camera& camera, Screen& screen) {
-    for (const auto& obj : scene.objects_) {
-        RenderObject(obj, camera, screen);
-    }
-}
-
-void Renderer::RenderObject(const Object& obj, const Camera& camera, Screen& screen) {
-    for (const auto& triangle : obj.object_) {
-        RenderTriangle(obj, triangle, camera, screen);
-    }
-}
-
 void Renderer::RenderTriangle(const Object& obj, const Triangle& triangle, const Camera& camera,
-                              Screen& screen) {
+                              Screen& screen) const {
     const Eigen::Vector4d p0 = ProjectVertex(GetGlobalCoordinates(obj, triangle.a), camera, screen);
     const Eigen::Vector4d p1 = ProjectVertex(GetGlobalCoordinates(obj, triangle.b), camera, screen);
     const Eigen::Vector4d p2 = ProjectVertex(GetGlobalCoordinates(obj, triangle.c), camera, screen);
@@ -46,14 +38,16 @@ void Renderer::RenderTriangle(const Object& obj, const Triangle& triangle, const
 }
 
 void Renderer::RenderTriangleWireframe(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
-                                       const Eigen::Vector4d& p2, uint32_t color, Screen& screen) {
+                                       const Eigen::Vector4d& p2, uint32_t color,
+                                       Screen& screen) const {
     DrawLine(p0.x(), p0.y(), p1.x(), p1.y(), color, screen);
     DrawLine(p1.x(), p1.y(), p2.x(), p2.y(), color, screen);
     DrawLine(p2.x(), p2.y(), p0.x(), p0.y(), color, screen);
 }
 
 void Renderer::RenderTriangleFilled(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
-                                    const Eigen::Vector4d& p2, uint32_t color, Screen& screen) {
+                                    const Eigen::Vector4d& p2, uint32_t color,
+                                    Screen& screen) const {
     const int min_x = std::max(0, static_cast<int>(std::floor(std::min({p0.x(), p1.x(), p2.x()}))));
     const int max_x = std::min(static_cast<int>(screen.GetWidth()) - 1,
                                static_cast<int>(std::ceil(std::max({p0.x(), p1.x(), p2.x()}))));
@@ -70,7 +64,7 @@ void Renderer::RenderTriangleFilled(const Eigen::Vector4d& p0, const Eigen::Vect
     }
 }
 
-void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color, Screen& screen) {
+void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color, Screen& screen) const {
     bool steep = false;
     if (std::abs(x0 - x1) < std::abs(y0 - y1)) {
         std::swap(x0, y0);
@@ -114,7 +108,7 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color, Screen& 
 
 void Renderer::ProcessPixel(int x, int y, const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
                             const Eigen::Vector4d& p2, double area, uint32_t color,
-                            Screen& screen) {
+                            Screen& screen) const {
     double w0 = EdgeFunction(p1.x(), p1.y(), p2.x(), p2.y(), x, y);
     double w1 = EdgeFunction(p2.x(), p2.y(), p0.x(), p0.y(), x, y);
     double w2 = EdgeFunction(p0.x(), p0.y(), p1.x(), p1.y(), x, y);
@@ -126,7 +120,7 @@ void Renderer::ProcessPixel(int x, int y, const Eigen::Vector4d& p0, const Eigen
 
 void Renderer::UpdatePixel(int x, int y, double w0, double w1, double w2, const Eigen::Vector4d& p0,
                            const Eigen::Vector4d& p1, const Eigen::Vector4d& p2, uint32_t color,
-                           Screen& screen) {
+                           Screen& screen) const {
     const double z = w0 * p0.z() + w1 * p1.z() + w2 * p2.z();
     const int index = GetBufferIndex(x, y, screen);
 

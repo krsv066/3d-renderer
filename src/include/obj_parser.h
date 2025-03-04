@@ -14,7 +14,6 @@ public:
 
 private:
     static std::vector<Eigen::Vector3d> ParseVertices(const std::string& content);
-
     static std::vector<Triangle> ParseFaces(const std::string& content,
                                             const std::vector<Eigen::Vector3d>& vertices,
                                             uint32_t color);

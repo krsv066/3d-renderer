@@ -3,70 +3,74 @@
 #include "screen.h"
 #include "world.h"
 #include <Eigen/Dense>
-#include <SFML/Graphics.hpp>
+#include <cassert>
 
-Renderer::Renderer(const Camera& camera, const World& scene, const Screen& screen, Mode mode)
-    : camera_(camera), scene_(scene), screen_(screen), render_mode_(mode) {
+Renderer::Renderer(Mode mode) : render_mode_(mode) {
 }
 
-void Renderer::Render() {
-    RenderFrame();
-    ShowFrame();
+Screen Renderer::Render(const World& scene, const Camera& camera, Screen&& screen) {
+    assert(screen.GetWidth() > 0 && screen.GetHeight() > 0);
+
+    screen.Clear();
+    RenderFrame(scene, camera, screen);
+
+    return std::move(screen);
 }
 
-void Renderer::RenderFrame() {
-    for (const auto& obj : scene_.objects_) {
-        RenderObject(obj);
+void Renderer::RenderFrame(const World& scene, const Camera& camera, Screen& screen) {
+    for (const auto& obj : scene.objects_) {
+        RenderObject(obj, camera, screen);
     }
 }
 
-void Renderer::RenderObject(const Object& obj) {
+void Renderer::RenderObject(const Object& obj, const Camera& camera, Screen& screen) {
     for (const auto& triangle : obj.object_) {
-        RenderTriangle(obj, triangle);
+        RenderTriangle(obj, triangle, camera, screen);
     }
 }
 
-void Renderer::RenderTriangle(const Object& obj, const Triangle& triangle) {
-    const Eigen::Vector4d p0 = ProjectVertex(GetGlobalCoordinates(obj, triangle.a));
-    const Eigen::Vector4d p1 = ProjectVertex(GetGlobalCoordinates(obj, triangle.b));
-    const Eigen::Vector4d p2 = ProjectVertex(GetGlobalCoordinates(obj, triangle.c));
+void Renderer::RenderTriangle(const Object& obj, const Triangle& triangle, const Camera& camera,
+                              Screen& screen) {
+    const Eigen::Vector4d p0 = ProjectVertex(GetGlobalCoordinates(obj, triangle.a), camera, screen);
+    const Eigen::Vector4d p1 = ProjectVertex(GetGlobalCoordinates(obj, triangle.b), camera, screen);
+    const Eigen::Vector4d p2 = ProjectVertex(GetGlobalCoordinates(obj, triangle.c), camera, screen);
 
     switch (render_mode_) {
         case Mode::Wireframe:
-            RenderTriangleWireframe(p0, p1, p2, triangle.color);
+            RenderTriangleWireframe(p0, p1, p2, triangle.color, screen);
             break;
         case Mode::Filled:
-            RenderTriangleFilled(p0, p1, p2, triangle.color);
+            RenderTriangleFilled(p0, p1, p2, triangle.color, screen);
             break;
     }
 }
 
 void Renderer::RenderTriangleWireframe(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
-                                       const Eigen::Vector4d& p2, uint32_t color) {
-    DrawLine(p0.x(), p0.y(), p1.x(), p1.y(), color);
-    DrawLine(p1.x(), p1.y(), p2.x(), p2.y(), color);
-    DrawLine(p2.x(), p2.y(), p0.x(), p0.y(), color);
+                                       const Eigen::Vector4d& p2, uint32_t color, Screen& screen) {
+    DrawLine(p0.x(), p0.y(), p1.x(), p1.y(), color, screen);
+    DrawLine(p1.x(), p1.y(), p2.x(), p2.y(), color, screen);
+    DrawLine(p2.x(), p2.y(), p0.x(), p0.y(), color, screen);
 }
 
 void Renderer::RenderTriangleFilled(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
-                                    const Eigen::Vector4d& p2, uint32_t color) {
+                                    const Eigen::Vector4d& p2, uint32_t color, Screen& screen) {
     const int min_x = std::max(0, static_cast<int>(std::floor(std::min({p0.x(), p1.x(), p2.x()}))));
-    const int max_x = std::min(static_cast<int>(screen_.GetWidth()) - 1,
+    const int max_x = std::min(static_cast<int>(screen.GetWidth()) - 1,
                                static_cast<int>(std::ceil(std::max({p0.x(), p1.x(), p2.x()}))));
     const int min_y = std::max(0, static_cast<int>(std::floor(std::min({p0.y(), p1.y(), p2.y()}))));
-    const int max_y = std::min(static_cast<int>(screen_.GetHeight()) - 1,
+    const int max_y = std::min(static_cast<int>(screen.GetHeight()) - 1,
                                static_cast<int>(std::ceil(std::max({p0.y(), p1.y(), p2.y()}))));
 
     const double area = EdgeFunction(p0.x(), p0.y(), p1.x(), p1.y(), p2.x(), p2.y());
 
     for (int y = min_y; y <= max_y; ++y) {
         for (int x = min_x; x <= max_x; ++x) {
-            ProcessPixel(x, y, p0, p1, p2, area, color);
+            ProcessPixel(x, y, p0, p1, p2, area, color, screen);
         }
     }
 }
 
-void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color) {
+void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color, Screen& screen) {
     bool steep = false;
     if (std::abs(x0 - x1) < std::abs(y0 - y1)) {
         std::swap(x0, y0);
@@ -87,16 +91,16 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color) {
 
     for (int x = x0; x <= x1; ++x) {
         if (steep) {
-            if (y >= 0 && y < static_cast<int>(screen_.GetWidth()) && x >= 0 &&
-                x < static_cast<int>(screen_.GetHeight())) {
-                const int index = GetBufferIndex(y, x) * 4;
-                screen_.SetFrameBufferPixel(index, color);
+            if (y >= 0 && y < static_cast<int>(screen.GetWidth()) && x >= 0 &&
+                x < static_cast<int>(screen.GetHeight())) {
+                const int index = GetBufferIndex(y, x, screen) * 4;
+                screen.SetFrameBufferPixel(index, color);
             }
         } else {
-            if (x >= 0 && x < static_cast<int>(screen_.GetWidth()) && y >= 0 &&
-                y < static_cast<int>(screen_.GetHeight())) {
-                const int index = GetBufferIndex(x, y) * 4;
-                screen_.SetFrameBufferPixel(index, color);
+            if (x >= 0 && x < static_cast<int>(screen.GetWidth()) && y >= 0 &&
+                y < static_cast<int>(screen.GetHeight())) {
+                const int index = GetBufferIndex(x, y, screen) * 4;
+                screen.SetFrameBufferPixel(index, color);
             }
         }
 
@@ -109,51 +113,34 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color) {
 }
 
 void Renderer::ProcessPixel(int x, int y, const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
-                            const Eigen::Vector4d& p2, double area, uint32_t color) {
+                            const Eigen::Vector4d& p2, double area, uint32_t color,
+                            Screen& screen) {
     double w0 = EdgeFunction(p1.x(), p1.y(), p2.x(), p2.y(), x, y);
     double w1 = EdgeFunction(p2.x(), p2.y(), p0.x(), p0.y(), x, y);
     double w2 = EdgeFunction(p0.x(), p0.y(), p1.x(), p1.y(), x, y);
 
     if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
-        UpdatePixel(x, y, w0 / area, w1 / area, w2 / area, p0, p1, p2, color);
+        UpdatePixel(x, y, w0 / area, w1 / area, w2 / area, p0, p1, p2, color, screen);
     }
 }
 
 void Renderer::UpdatePixel(int x, int y, double w0, double w1, double w2, const Eigen::Vector4d& p0,
-                           const Eigen::Vector4d& p1, const Eigen::Vector4d& p2, uint32_t color) {
+                           const Eigen::Vector4d& p1, const Eigen::Vector4d& p2, uint32_t color,
+                           Screen& screen) {
     const double z = w0 * p0.z() + w1 * p1.z() + w2 * p2.z();
-    const int index = GetBufferIndex(x, y);
+    const int index = GetBufferIndex(x, y, screen);
 
-    if (z < screen_.GetZBufferDepth(index)) {
-        screen_.SetZBufferDepth(index, z);
+    if (z < screen.GetZBufferDepth(index)) {
+        screen.SetZBufferDepth(index, z);
         const size_t pixel_index = index * 4;
-        screen_.SetFrameBufferPixel(pixel_index, color);
+        screen.SetFrameBufferPixel(pixel_index, color);
     }
 }
 
-void Renderer::ShowFrame() const {
-    sf::RenderWindow window(sf::VideoMode({screen_.GetWidth(), screen_.GetHeight()}),
-                            "3d renderer");
-    sf::Texture texture(sf::Vector2u(screen_.GetWidth(), screen_.GetHeight()));
-    texture.update(screen_.GetFrameBuffer());
-    sf::Sprite sprite(texture);
-
-    while (window.isOpen()) {
-        while (const std::optional event = window.pollEvent()) {
-            if (event->is<sf::Event::Closed>()) {
-                window.close();
-            }
-        }
-
-        window.clear();
-        window.draw(sprite);
-        window.display();
-    }
-}
-
-Eigen::Vector4d Renderer::ProjectVertex(const Eigen::Vector3d& p) const {
+Eigen::Vector4d Renderer::ProjectVertex(const Eigen::Vector3d& p, const Camera& camera,
+                                        const Screen& screen) const {
     Eigen::Vector4d pos(p.x(), p.y(), p.z(), 1.0);
-    Eigen::Vector4d projected = camera_.GetProjectionMatrix() * pos;
+    Eigen::Vector4d projected = camera.GetProjectionMatrix() * pos;
 
     if (projected.w() != 0) {
         projected.x() /= projected.w();
@@ -161,8 +148,8 @@ Eigen::Vector4d Renderer::ProjectVertex(const Eigen::Vector3d& p) const {
         projected.z() /= projected.w();
     }
 
-    projected.x() = (projected.x() + 1.0) * screen_.GetWidth() * 0.5;
-    projected.y() = (projected.y() + 1.0) * screen_.GetHeight() * 0.5;
+    projected.x() = (projected.x() + 1.0) * screen.GetWidth() * 0.5;
+    projected.y() = (projected.y() + 1.0) * screen.GetHeight() * 0.5;
 
     return projected;
 }
@@ -171,8 +158,8 @@ Eigen::Vector3d Renderer::GetGlobalCoordinates(const Object& obj, const Eigen::V
     return obj.rotation_ * p + obj.translation_;
 }
 
-int Renderer::GetBufferIndex(int x, int y) const {
-    return (screen_.GetHeight() - y) * screen_.GetWidth() + x;
+int Renderer::GetBufferIndex(int x, int y, const Screen& screen) const {
+    return (screen.GetHeight() - y) * screen.GetWidth() + x;
 }
 
 double Renderer::EdgeFunction(double x0, double y0, double x1, double y1, double x,

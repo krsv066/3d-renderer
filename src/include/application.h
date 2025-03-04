@@ -1,18 +1,15 @@
 #pragma once
 
 #include "renderer.h"
-#include "screen.h"
 #include "world.h"
 
 class Application {
 public:
     Application();
-
     void Run();
 
-private:    
-    World scene_;
-    Camera camera_;
-    Screen screen_;
+private:
     Renderer renderer_;
+    World world_;
+    Camera camera_;
 };

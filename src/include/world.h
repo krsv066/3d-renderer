@@ -8,7 +8,6 @@ class World {
 
 public:
     World(std::initializer_list<Object> list);
-
     template <typename... Objects>
     void Add(Objects&&... objects) {
         (objects_.push_back(std::forward<Objects>(objects)), ...);

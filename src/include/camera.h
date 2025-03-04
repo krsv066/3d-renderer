@@ -29,7 +29,6 @@ struct Far {
 class Camera {
 public:
     Camera(Fov fov, Aspect aspect, Near near, Far far);
-
     const Eigen::Matrix4d& GetProjectionMatrix() const;
 
 private:

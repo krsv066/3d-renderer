@@ -1,7 +1,5 @@
 #include "renderer.h"
 #include "object.h"
-#include "screen.h"
-#include "world.h"
 #include <Eigen/Dense>
 #include <cassert>
 

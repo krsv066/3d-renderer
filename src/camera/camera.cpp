@@ -1,6 +1,7 @@
 #include "camera.h"
 #include <cmath>
 
+namespace renderer {
 Camera::Camera(Fov fov, Aspect aspect, Near near, Far far) {
     const double tan_half_fov = std::tan(fov.value / 2.0);
     projection_matrix_ = Eigen::Matrix4d::Zero();
@@ -14,3 +15,4 @@ Camera::Camera(Fov fov, Aspect aspect, Near near, Far far) {
 const Eigen::Matrix4d& Camera::GetProjectionMatrix() const {
     return projection_matrix_;
 }
+}  // namespace renderer

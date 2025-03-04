@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <limits>
 
+namespace renderer {
 Screen::Screen(Width width, Height height)
     : width_(width),
       height_(height),
@@ -63,3 +64,4 @@ void Screen::Clear() {
     std::fill(frame_buffer_.begin(), frame_buffer_.end(), 0);
     std::fill(z_buffer_.begin(), z_buffer_.end(), std::numeric_limits<double>::infinity());
 }
+}  // namespace renderer

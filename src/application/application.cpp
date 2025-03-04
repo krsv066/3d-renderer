@@ -4,13 +4,14 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
+namespace renderer {
 static constexpr Width kDefaultWidth{1280};
 static constexpr Height kDefaultHeight{720};
 static constexpr std::string kDefaultTitel = "3D Renderer";
 
 Application::Application()
     : renderer_(Renderer::Mode::Wireframe),
-      world_{ObjParser::LoadObj(
+      world_{parser::Parser::LoadObj(
           "../src/models/cube.obj", Eigen::Vector3d(0.0, 0.0, -3.0),
           Eigen::AngleAxisd(M_PI / 8.0, Eigen::Vector3d::UnitX()).toRotationMatrix() *
               Eigen::AngleAxisd(M_PI / 8.0, Eigen::Vector3d::UnitY()).toRotationMatrix(),
@@ -43,3 +44,4 @@ void Application::Run() {
         window.display();
     }
 }
+}  // namespace renderer

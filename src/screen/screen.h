@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 
+namespace renderer {
 enum Width : uint32_t;
 enum Height : uint32_t;
 
@@ -25,3 +26,4 @@ private:
     std::vector<double> z_buffer_;
     std::vector<uint8_t> frame_buffer_;
 };
+}  // namespace renderer

@@ -6,6 +6,7 @@
 #include <Eigen/Dense>
 #include <cstdint>
 
+namespace renderer {
 class Renderer {
 public:
     enum class Mode : uint8_t { Filled, Wireframe };
@@ -16,8 +17,8 @@ public:
 private:
     Mode render_mode_;
 
-    void RenderTriangle(const Object& obj, const Triangle& triangle, const Camera& camera,
-                        Screen& screen) const;
+    void RenderTriangle(const Object& obj, const primitive::Triangle& triangle,
+                        const Camera& camera, Screen& screen) const;
     void RenderTriangleWireframe(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
                                  const Eigen::Vector4d& p2, uint32_t color, Screen& screen) const;
     void RenderTriangleFilled(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
@@ -35,3 +36,4 @@ private:
     inline double EdgeFunction(double x0, double y0, double x1, double y1, double x,
                                double y) const;
 };
+}  // namespace renderer

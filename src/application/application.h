@@ -2,6 +2,7 @@
 
 #include "renderer.h"
 
+namespace renderer {
 class Application {
 public:
     Application();
@@ -12,3 +13,4 @@ private:
     World world_;
     Camera camera_;
 };
+}  // namespace renderer

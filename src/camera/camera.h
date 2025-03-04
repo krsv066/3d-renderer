@@ -2,6 +2,7 @@
 
 #include <Eigen/Dense>
 
+namespace renderer {
 struct Fov {
     double value;
     Fov(double value) : value(value) {
@@ -34,3 +35,4 @@ public:
 private:
     Eigen::Matrix4d projection_matrix_;
 };
+}  // namespace renderer

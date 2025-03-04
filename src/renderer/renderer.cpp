@@ -3,6 +3,7 @@
 #include <Eigen/Dense>
 #include <cassert>
 
+namespace renderer {
 Renderer::Renderer(Mode mode) : render_mode_(mode) {
 }
 
@@ -19,8 +20,8 @@ Screen Renderer::Render(const World& scene, const Camera& camera, Screen&& scree
     return std::move(screen);
 }
 
-void Renderer::RenderTriangle(const Object& obj, const Triangle& triangle, const Camera& camera,
-                              Screen& screen) const {
+void Renderer::RenderTriangle(const Object& obj, const primitive::Triangle& triangle,
+                              const Camera& camera, Screen& screen) const {
     const Eigen::Vector4d p0 = ProjectVertex(GetGlobalCoordinates(obj, triangle.a), camera, screen);
     const Eigen::Vector4d p1 = ProjectVertex(GetGlobalCoordinates(obj, triangle.b), camera, screen);
     const Eigen::Vector4d p2 = ProjectVertex(GetGlobalCoordinates(obj, triangle.c), camera, screen);
@@ -158,3 +159,4 @@ double Renderer::EdgeFunction(double x0, double y0, double x1, double y1, double
                               double y) const {
     return (y - y0) * (x1 - x0) - (x - x0) * (y1 - y0);
 }
+}  // namespace renderer

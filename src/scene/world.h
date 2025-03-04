@@ -1,8 +1,8 @@
 #pragma once
 
 #include "object.h"
-#include <vector>
 
+namespace renderer {
 class World {
     friend class Renderer;
 
@@ -16,3 +16,4 @@ public:
 private:
     std::vector<Object> objects_;
 };
+}  // namespace renderer

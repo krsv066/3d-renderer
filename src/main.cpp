@@ -3,10 +3,10 @@
 
 int main() {
     try {
-        Application app;
+        renderer::Application app;
         app.Run();
     } catch (...) {
-        except::React();
+        renderer::except::React();
     }
 
     return 0;

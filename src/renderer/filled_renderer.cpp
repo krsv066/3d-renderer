@@ -36,7 +36,6 @@ void Renderer::UpdatePixel(int x, int y, double w0, double w1, double w2, const 
                            const Vector4& p1, const Vector4& p2, uint32_t color,
                            Screen& screen) const {
     const double z = w0 * p0.z() + w1 * p1.z() + w2 * p2.z();
-
     if (z < screen.GetZBufferDepth(x, y)) {
         screen.SetZBufferDepth(x, y, z);
         screen.SetFrameBufferPixel(x, y, color);

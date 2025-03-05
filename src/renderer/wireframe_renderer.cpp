@@ -30,13 +30,11 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color, Screen& 
 
     for (int x = x0; x <= x1; ++x) {
         if (steep) {
-            if (y >= 0 && y < static_cast<int>(screen.GetWidth()) && x >= 0 &&
-                x < static_cast<int>(screen.GetHeight())) {
+            if (y >= 0 && y < screen.GetWidth() && x >= 0 && x < screen.GetHeight()) {
                 screen.SetFrameBufferPixel(y, x, color);
             }
         } else {
-            if (x >= 0 && x < static_cast<int>(screen.GetWidth()) && y >= 0 &&
-                y < static_cast<int>(screen.GetHeight())) {
+            if (x >= 0 && x < screen.GetWidth() && y >= 0 && y < screen.GetHeight()) {
                 screen.SetFrameBufferPixel(x, y, color);
             }
         }

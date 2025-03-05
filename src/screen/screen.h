@@ -4,8 +4,8 @@
 #include <vector>
 
 namespace renderer {
-enum Width : uint32_t;
-enum Height : uint32_t;
+enum Width : int;
+enum Height : int;
 
 class Screen {
 public:

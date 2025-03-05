@@ -1,6 +1,5 @@
 #include "renderer.h"
 #include "object.h"
-#include <Eigen/Dense>
 #include <cassert>
 
 namespace renderer {
@@ -22,9 +21,9 @@ Screen Renderer::Render(const World& scene, const Camera& camera, Screen&& scree
 
 void Renderer::RenderTriangle(const Object& obj, const primitive::Triangle& triangle,
                               const Camera& camera, Screen& screen) const {
-    const Eigen::Vector4d p0 = ProjectVertex(GetGlobalCoordinates(obj, triangle.a), camera, screen);
-    const Eigen::Vector4d p1 = ProjectVertex(GetGlobalCoordinates(obj, triangle.b), camera, screen);
-    const Eigen::Vector4d p2 = ProjectVertex(GetGlobalCoordinates(obj, triangle.c), camera, screen);
+    const Vector4 p0 = ProjectVertex(GetGlobalCoordinates(obj, triangle.a), camera, screen);
+    const Vector4 p1 = ProjectVertex(GetGlobalCoordinates(obj, triangle.b), camera, screen);
+    const Vector4 p2 = ProjectVertex(GetGlobalCoordinates(obj, triangle.c), camera, screen);
 
     switch (render_mode_) {
         case Mode::Wireframe:
@@ -36,17 +35,15 @@ void Renderer::RenderTriangle(const Object& obj, const primitive::Triangle& tria
     }
 }
 
-void Renderer::RenderTriangleWireframe(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
-                                       const Eigen::Vector4d& p2, uint32_t color,
-                                       Screen& screen) const {
+void Renderer::RenderTriangleWireframe(const Vector4& p0, const Vector4& p1, const Vector4& p2,
+                                       uint32_t color, Screen& screen) const {
     DrawLine(p0.x(), p0.y(), p1.x(), p1.y(), color, screen);
     DrawLine(p1.x(), p1.y(), p2.x(), p2.y(), color, screen);
     DrawLine(p2.x(), p2.y(), p0.x(), p0.y(), color, screen);
 }
 
-void Renderer::RenderTriangleFilled(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
-                                    const Eigen::Vector4d& p2, uint32_t color,
-                                    Screen& screen) const {
+void Renderer::RenderTriangleFilled(const Vector4& p0, const Vector4& p1, const Vector4& p2,
+                                    uint32_t color, Screen& screen) const {
     const int min_x = std::max(0, static_cast<int>(std::floor(std::min({p0.x(), p1.x(), p2.x()}))));
     const int max_x = std::min(static_cast<int>(screen.GetWidth()) - 1,
                                static_cast<int>(std::ceil(std::max({p0.x(), p1.x(), p2.x()}))));
@@ -105,9 +102,8 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color, Screen& 
     }
 }
 
-void Renderer::ProcessPixel(int x, int y, const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
-                            const Eigen::Vector4d& p2, double area, uint32_t color,
-                            Screen& screen) const {
+void Renderer::ProcessPixel(int x, int y, const Vector4& p0, const Vector4& p1, const Vector4& p2,
+                            double area, uint32_t color, Screen& screen) const {
     double w0 = EdgeFunction(p1.x(), p1.y(), p2.x(), p2.y(), x, y);
     double w1 = EdgeFunction(p2.x(), p2.y(), p0.x(), p0.y(), x, y);
     double w2 = EdgeFunction(p0.x(), p0.y(), p1.x(), p1.y(), x, y);
@@ -117,8 +113,8 @@ void Renderer::ProcessPixel(int x, int y, const Eigen::Vector4d& p0, const Eigen
     }
 }
 
-void Renderer::UpdatePixel(int x, int y, double w0, double w1, double w2, const Eigen::Vector4d& p0,
-                           const Eigen::Vector4d& p1, const Eigen::Vector4d& p2, uint32_t color,
+void Renderer::UpdatePixel(int x, int y, double w0, double w1, double w2, const Vector4& p0,
+                           const Vector4& p1, const Vector4& p2, uint32_t color,
                            Screen& screen) const {
     const double z = w0 * p0.z() + w1 * p1.z() + w2 * p2.z();
     const int index = GetBufferIndex(x, y, screen);
@@ -130,10 +126,10 @@ void Renderer::UpdatePixel(int x, int y, double w0, double w1, double w2, const 
     }
 }
 
-Eigen::Vector4d Renderer::ProjectVertex(const Eigen::Vector3d& p, const Camera& camera,
-                                        const Screen& screen) const {
-    Eigen::Vector4d pos(p.x(), p.y(), p.z(), 1.0);
-    Eigen::Vector4d projected = camera.GetProjectionMatrix() * pos;
+Vector4 Renderer::ProjectVertex(const Vector3& p, const Camera& camera,
+                                const Screen& screen) const {
+    Vector4 pos(p.x(), p.y(), p.z(), 1.0);
+    Vector4 projected = camera.GetProjectionMatrix() * pos;
 
     if (projected.w() != 0) {
         projected.x() /= projected.w();
@@ -147,7 +143,7 @@ Eigen::Vector4d Renderer::ProjectVertex(const Eigen::Vector3d& p, const Camera& 
     return projected;
 }
 
-Eigen::Vector3d Renderer::GetGlobalCoordinates(const Object& obj, const Eigen::Vector3d& p) const {
+Vector3 Renderer::GetGlobalCoordinates(const Object& obj, const Vector3& p) const {
     return obj.rotation_ * p + obj.translation_;
 }
 

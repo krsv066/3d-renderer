@@ -11,11 +11,10 @@ static constexpr std::string kDefaultTitel = "3D Renderer";
 
 Application::Application()
     : renderer_(Renderer::Mode::Wireframe),
-      world_{parser::Parser::LoadObj(
-          "../src/models/cube.obj", Eigen::Vector3d(0.0, 0.0, -3.0),
-          Eigen::AngleAxisd(M_PI / 8.0, Eigen::Vector3d::UnitX()).toRotationMatrix() *
-              Eigen::AngleAxisd(M_PI / 8.0, Eigen::Vector3d::UnitY()).toRotationMatrix(),
-          0xFF00FF)},
+      world_{parser::Parser::LoadObj("../src/models/cube.obj", Vector3(0.0, 0.0, -3.0),
+                                     AngleAxis(M_PI / 8.0, Vector3::UnitX()).toRotationMatrix() *
+                                         AngleAxis(M_PI / 8.0, Vector3::UnitY()).toRotationMatrix(),
+                                     0xFF00FF)},
       camera_(Fov{60.0 * M_PI / 180.0}, Aspect{static_cast<double>(kDefaultWidth) / kDefaultHeight},
               Near{0.1}, Far{100.0}) {
 }

@@ -9,11 +9,11 @@ class Object {
 
 public:
     Object(std::initializer_list<primitive::Triangle> list,
-           const Eigen::Vector3d &translation = Eigen::Vector3d::Zero(),
-           const Eigen::Matrix3d &rotation = Eigen::Matrix3d::Identity());
+           const Vector3 &translation = Vector3::Zero(),
+           const Matrix3 &rotation = Matrix3::Identity());
     Object(const std::vector<primitive::Triangle> &triangles,
-           const Eigen::Vector3d &translation = Eigen::Vector3d::Zero(),
-           const Eigen::Matrix3d &rotation = Eigen::Matrix3d::Identity());
+           const Vector3 &translation = Vector3::Zero(),
+           const Matrix3 &rotation = Matrix3::Identity());
     template <typename... Triangles>
     void Add(Triangles &&...triangles) {
         (object_.push_back(std::forward<Triangles>(triangles)), ...);
@@ -21,7 +21,7 @@ public:
 
 private:
     std::vector<primitive::Triangle> object_;
-    Eigen::Vector3d translation_;
-    Eigen::Matrix3d rotation_;
+    Vector3 translation_;
+    Matrix3 rotation_;
 };
 }  // namespace renderer

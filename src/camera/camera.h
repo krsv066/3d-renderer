@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Eigen/Dense>
+#include "linalg.h"
 
 namespace renderer {
 struct Fov {
@@ -30,9 +30,9 @@ struct Far {
 class Camera {
 public:
     Camera(Fov fov, Aspect aspect, Near near, Far far);
-    const Eigen::Matrix4d& GetProjectionMatrix() const;
+    const Matrix4& GetProjectionMatrix() const;
 
 private:
-    Eigen::Matrix4d projection_matrix_;
+    Matrix4 projection_matrix_;
 };
 }  // namespace renderer

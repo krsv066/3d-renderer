@@ -1,13 +1,13 @@
 #pragma once
 
-#include <Eigen/Dense>
+#include "linalg.h"
 #include <cstdint>
 
 namespace renderer::primitive {
 struct Triangle {
-    Eigen::Vector3d a;
-    Eigen::Vector3d b;
-    Eigen::Vector3d c;
+    Vector3 a;
+    Vector3 b;
+    Vector3 c;
     uint32_t color;
 };
 }  // namespace renderer::primitive

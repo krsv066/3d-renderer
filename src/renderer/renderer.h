@@ -1,9 +1,9 @@
 #pragma once
 
 #include "camera.h"
+#include "linalg.h"
 #include "screen.h"
 #include "world.h"
-#include <Eigen/Dense>
 #include <cstdint>
 
 namespace renderer {
@@ -19,19 +19,17 @@ private:
 
     void RenderTriangle(const Object& obj, const primitive::Triangle& triangle,
                         const Camera& camera, Screen& screen) const;
-    void RenderTriangleWireframe(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
-                                 const Eigen::Vector4d& p2, uint32_t color, Screen& screen) const;
-    void RenderTriangleFilled(const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
-                              const Eigen::Vector4d& p2, uint32_t color, Screen& screen) const;
+    void RenderTriangleWireframe(const Vector4& p0, const Vector4& p1, const Vector4& p2,
+                                 uint32_t color, Screen& screen) const;
+    void RenderTriangleFilled(const Vector4& p0, const Vector4& p1, const Vector4& p2,
+                              uint32_t color, Screen& screen) const;
     void DrawLine(int x0, int y0, int x1, int y1, uint32_t color, Screen& screen) const;
-    void ProcessPixel(int x, int y, const Eigen::Vector4d& p0, const Eigen::Vector4d& p1,
-                      const Eigen::Vector4d& p2, double area, uint32_t color, Screen& screen) const;
-    void UpdatePixel(int x, int y, double w0, double w1, double w2, const Eigen::Vector4d& p0,
-                     const Eigen::Vector4d& p1, const Eigen::Vector4d& p2, uint32_t color,
-                     Screen& screen) const;
-    Eigen::Vector4d ProjectVertex(const Eigen::Vector3d& p, const Camera& camera,
-                                  const Screen& screen) const;
-    inline Eigen::Vector3d GetGlobalCoordinates(const Object& obj, const Eigen::Vector3d& p) const;
+    void ProcessPixel(int x, int y, const Vector4& p0, const Vector4& p1, const Vector4& p2,
+                      double area, uint32_t color, Screen& screen) const;
+    void UpdatePixel(int x, int y, double w0, double w1, double w2, const Vector4& p0,
+                     const Vector4& p1, const Vector4& p2, uint32_t color, Screen& screen) const;
+    Vector4 ProjectVertex(const Vector3& p, const Camera& camera, const Screen& screen) const;
+    inline Vector3 GetGlobalCoordinates(const Object& obj, const Vector3& p) const;
     inline int GetBufferIndex(int x, int y, const Screen& screen) const;
     inline double EdgeFunction(double x0, double y0, double x1, double y1, double x,
                                double y) const;

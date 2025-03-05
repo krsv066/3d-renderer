@@ -2,11 +2,10 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
-#include "object.h"
 
 namespace renderer::parser {
-renderer::Object Parser::LoadObj(const std::string& filename, const Eigen::Vector3d& translation,
-                                 const Eigen::Matrix3d& rotation, uint32_t color) {
+renderer::Object Parser::LoadObj(const std::string& filename, const Vector3& translation,
+                                 const Matrix3& rotation, uint32_t color) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Failed to open file: " + filename);
@@ -23,8 +22,8 @@ renderer::Object Parser::LoadObj(const std::string& filename, const Eigen::Vecto
     return renderer::Object{triangles, translation, rotation};
 }
 
-std::vector<Eigen::Vector3d> Parser::ParseVertices(const std::string& content) {
-    std::vector<Eigen::Vector3d> vertices;
+std::vector<Vector3> Parser::ParseVertices(const std::string& content) {
+    std::vector<Vector3> vertices;
     std::stringstream ss(content);
     std::string line;
 
@@ -43,7 +42,7 @@ std::vector<Eigen::Vector3d> Parser::ParseVertices(const std::string& content) {
 }
 
 std::vector<primitive::Triangle> Parser::ParseFaces(const std::string& content,
-                                                    const std::vector<Eigen::Vector3d>& vertices,
+                                                    const std::vector<Vector3>& vertices,
                                                     uint32_t color) {
     std::vector<primitive::Triangle> triangles;
     std::stringstream ss(content);

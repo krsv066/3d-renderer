@@ -10,8 +10,8 @@ Screen Renderer::Render(const World& scene, const Camera& camera, Screen&& scree
     assert(screen.GetWidth() > 0 && screen.GetHeight() > 0);
 
     screen.Clear();
-    for (const auto& obj : scene.objects_) {
-        for (const auto& triangle : obj.object_) {
+    for (const auto& obj : scene.GetObjects()) {
+        for (const auto& triangle : obj.GetTriangles()) {
             RenderTriangle(obj, triangle, camera, screen);
         }
     }
@@ -144,7 +144,7 @@ Vector4 Renderer::ProjectVertex(const Vector3& p, const Camera& camera,
 }
 
 Vector3 Renderer::GetGlobalCoordinates(const Object& obj, const Vector3& p) const {
-    return obj.rotation_ * p + obj.translation_;
+    return obj.GetRotation() * p + obj.GetTranslation();
 }
 
 int Renderer::GetBufferIndex(int x, int y, const Screen& screen) const {

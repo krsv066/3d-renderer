@@ -5,8 +5,6 @@
 
 namespace renderer {
 class Object {
-    friend class Renderer;
-
 public:
     Object(std::initializer_list<primitive::Triangle> list,
            const Vector3 &translation = Vector3::Zero(),
@@ -14,6 +12,9 @@ public:
     Object(const std::vector<primitive::Triangle> &triangles,
            const Vector3 &translation = Vector3::Zero(),
            const Matrix3 &rotation = Matrix3::Identity());
+    const std::vector<primitive::Triangle> &GetTriangles() const;
+    const Vector3 &GetTranslation() const;
+    const Matrix3 &GetRotation() const;
     template <typename... Triangles>
     void Add(Triangles &&...triangles) {
         (object_.push_back(std::forward<Triangles>(triangles)), ...);

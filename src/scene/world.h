@@ -4,12 +4,11 @@
 
 namespace renderer {
 class World {
-    friend class Renderer;
-
 public:
     World(std::initializer_list<Object> list);
+    const std::vector<Object> &GetObjects() const;
     template <typename... Objects>
-    void Add(Objects&&... objects) {
+    void Add(Objects &&...objects) {
         (objects_.push_back(std::forward<Objects>(objects)), ...);
     }
 

@@ -16,8 +16,8 @@ public:
                   Screen&& screen = Screen(Width{0}, Height{0})) const;
 
 private:
-    using RenderTriangleFunc =
-        std::function<void(const Vector4&, const Vector4&, const Vector4&, uint32_t, Screen&)>;
+    using RenderTriangleFunc = std::function<void(const Vector4& point0, const Vector4& point1,
+                                                  const Vector4& point2, uint32_t, Screen&)>;
     RenderTriangleFunc render_triangle_;
 
     void RenderTriangle(const Object& obj, const primitive::Triangle& triangle,

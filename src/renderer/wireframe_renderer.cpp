@@ -2,11 +2,12 @@
 #include <cmath>
 
 namespace renderer {
-void Renderer::RenderTriangleWireframe(const Vector4& p0, const Vector4& p1, const Vector4& p2,
-                                       uint32_t color, Screen& screen) const {
-    DrawLine(p0.x(), p0.y(), p1.x(), p1.y(), color, screen);
-    DrawLine(p1.x(), p1.y(), p2.x(), p2.y(), color, screen);
-    DrawLine(p2.x(), p2.y(), p0.x(), p0.y(), color, screen);
+void Renderer::RenderTriangleWireframe(const Vector4& point0, const Vector4& point1,
+                                       const Vector4& point2, uint32_t color,
+                                       Screen& screen) const {
+    DrawLine(point0.x(), point0.y(), point1.x(), point1.y(), color, screen);
+    DrawLine(point1.x(), point1.y(), point2.x(), point2.y(), color, screen);
+    DrawLine(point2.x(), point2.y(), point0.x(), point0.y(), color, screen);
 }
 
 void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color, Screen& screen) const {

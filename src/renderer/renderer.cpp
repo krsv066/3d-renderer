@@ -59,7 +59,7 @@ Vector4 Renderer::ProjectVertex(const Vector3& p, const Camera& camera,
     return projected;
 }
 
-Vector3 Renderer::GetGlobalCoordinates(const Object& obj, const Vector3& p) const {
+inline Vector3 Renderer::GetGlobalCoordinates(const Object& obj, const Vector3& p) const {
     return obj.GetRotation() * p + obj.GetTranslation();
 }
 }  // namespace renderer

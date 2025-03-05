@@ -33,23 +33,12 @@ Screen& Screen::operator=(Screen&& other) noexcept {
     return *this;
 }
 
-void Screen::SetFrameBufferPixel(int index, uint32_t color) {
-    frame_buffer_[index] = (color >> 16) & 0xFF;
-    frame_buffer_[index + 1] = (color >> 8) & 0xFF;
-    frame_buffer_[index + 2] = color & 0xFF;
-    frame_buffer_[index + 3] = 0xFF;
-}
-
-void Screen::SetZBufferDepth(int index, double z) {
-    z_buffer_[index] = z;
+double Screen::GetZBufferDepth(int x, int y) const {
+    return z_buffer_[GetZBufIdx(x, y)];
 }
 
 const uint8_t* Screen::GetFrameBuffer() const {
     return frame_buffer_.data();
-}
-
-double Screen::GetZBufferDepth(int index) const {
-    return z_buffer_[index];
 }
 
 Width Screen::GetWidth() const {
@@ -60,8 +49,28 @@ Height Screen::GetHeight() const {
     return height_;
 }
 
+void Screen::SetZBufferDepth(int x, int y, double z) {
+    z_buffer_[GetZBufIdx(x, y)] = z;
+}
+
+void Screen::SetFrameBufferPixel(int x, int y, uint32_t color) {
+    int index = GetFBufIdx(x, y);
+    frame_buffer_[index] = (color >> 16) & 0xFF;
+    frame_buffer_[index + 1] = (color >> 8) & 0xFF;
+    frame_buffer_[index + 2] = color & 0xFF;
+    frame_buffer_[index + 3] = 0xFF;
+}
+
 void Screen::Clear() {
     std::fill(frame_buffer_.begin(), frame_buffer_.end(), 0);
     std::fill(z_buffer_.begin(), z_buffer_.end(), std::numeric_limits<double>::infinity());
+}
+
+inline int Screen::GetZBufIdx(int x, int y) const {
+    return (height_ - y) * width_ + x;
+}
+
+inline int Screen::GetFBufIdx(int x, int y) const {
+    return GetZBufIdx(x, y) * 4;
 }
 }  // namespace renderer

@@ -12,12 +12,12 @@ public:
     Screen(Width width, Height height);
     Screen(Screen&& other) noexcept;
     Screen& operator=(Screen&& other) noexcept;
-    void SetFrameBufferPixel(int index, uint32_t color);
-    void SetZBufferDepth(int index, double z);
+    double GetZBufferDepth(int x, int y) const;
     const uint8_t* GetFrameBuffer() const;
-    double GetZBufferDepth(int index) const;
     Width GetWidth() const;
     Height GetHeight() const;
+    void SetZBufferDepth(int x, int y, double z);
+    void SetFrameBufferPixel(int x, int y, uint32_t color);
     void Clear();
 
 private:
@@ -25,5 +25,8 @@ private:
     Height height_;
     std::vector<double> z_buffer_;
     std::vector<uint8_t> frame_buffer_;
+
+    inline int GetZBufIdx(int x, int y) const;
+    inline int GetFBufIdx(int x, int y) const;
 };
 }  // namespace renderer

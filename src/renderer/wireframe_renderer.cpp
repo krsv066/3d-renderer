@@ -32,14 +32,12 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color, Screen& 
         if (steep) {
             if (y >= 0 && y < static_cast<int>(screen.GetWidth()) && x >= 0 &&
                 x < static_cast<int>(screen.GetHeight())) {
-                const int index = GetBufferIndex(y, x, screen) * 4;
-                screen.SetFrameBufferPixel(index, color);
+                screen.SetFrameBufferPixel(y, x, color);
             }
         } else {
             if (x >= 0 && x < static_cast<int>(screen.GetWidth()) && y >= 0 &&
                 y < static_cast<int>(screen.GetHeight())) {
-                const int index = GetBufferIndex(x, y, screen) * 4;
-                screen.SetFrameBufferPixel(index, color);
+                screen.SetFrameBufferPixel(x, y, color);
             }
         }
 
@@ -49,9 +47,5 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, uint32_t color, Screen& 
             error2 -= dx * 2;
         }
     }
-}
-
-int Renderer::GetBufferIndex(int x, int y, const Screen& screen) const {
-    return (screen.GetHeight() - y) * screen.GetWidth() + x;
 }
 }  // namespace renderer

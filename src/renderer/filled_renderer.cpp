@@ -36,21 +36,15 @@ void Renderer::UpdatePixel(int x, int y, double w0, double w1, double w2, const 
                            const Vector4& p1, const Vector4& p2, uint32_t color,
                            Screen& screen) const {
     const double z = w0 * p0.z() + w1 * p1.z() + w2 * p2.z();
-    const int index = GetBufferIndex(x, y, screen);
 
-    if (z < screen.GetZBufferDepth(index)) {
-        screen.SetZBufferDepth(index, z);
-        const size_t pixel_index = index * 4;
-        screen.SetFrameBufferPixel(pixel_index, color);
+    if (z < screen.GetZBufferDepth(x, y)) {
+        screen.SetZBufferDepth(x, y, z);
+        screen.SetFrameBufferPixel(x, y, color);
     }
 }
 
-int Renderer::GetBufferIndex(int x, int y, const Screen& screen) const {
-    return (screen.GetHeight() - y) * screen.GetWidth() + x;
-}
-
-double Renderer::EdgeFunction(double x0, double y0, double x1, double y1, double x,
-                              double y) const {
+inline double Renderer::EdgeFunction(double x0, double y0, double x1, double y1, double x,
+                                     double y) const {
     return (y - y0) * (x1 - x0) - (x - x0) * (y1 - y0);
 }
 }  // namespace renderer

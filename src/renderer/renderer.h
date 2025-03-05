@@ -33,7 +33,6 @@ private:
     void UpdatePixel(int x, int y, double w0, double w1, double w2, const Vector4& p0,
                      const Vector4& p1, const Vector4& p2, uint32_t color, Screen& screen) const;
     inline Vector3 GetGlobalCoordinates(const Object& obj, const Vector3& p) const;
-    inline int GetBufferIndex(int x, int y, const Screen& screen) const;
     inline double EdgeFunction(double x0, double y0, double x1, double y1, double x,
                                double y) const;
 };

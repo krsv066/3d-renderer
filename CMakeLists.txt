@@ -56,6 +56,8 @@ add_executable(
     src/application/application.cpp
     src/camera/camera.cpp
     src/renderer/renderer.cpp
+    src/renderer/filled_renderer.cpp
+    src/renderer/wireframe_renderer.cpp
     src/scene/object.cpp
     src/scene/world.cpp
     src/screen/screen.cpp

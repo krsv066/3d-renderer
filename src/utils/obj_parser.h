@@ -7,10 +7,9 @@
 namespace renderer::parser {
 class Parser {
 public:
-    static renderer::Object LoadObj(const std::string& filename,
+    static renderer::Object LoadObj(const std::string& filename, uint32_t color = 0xFFFFFF,
                                     const Vector3& translation = Vector3::Zero(),
-                                    const Matrix3& rotation = Matrix3::Identity(),
-                                    uint32_t color = 0xFFFFFF);
+                                    const Matrix3& rotation = Matrix3::Identity());
 
 private:
     static std::vector<Vector3> ParseVertices(const std::string& content);

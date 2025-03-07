@@ -4,8 +4,8 @@
 #include <stdexcept>
 
 namespace renderer::parser {
-renderer::Object Parser::LoadObj(const std::string& filename, const Vector3& translation,
-                                 const Matrix3& rotation, uint32_t color) {
+renderer::Object Parser::LoadObj(const std::string& filename, uint32_t color,
+                                 const Vector3& translation, const Matrix3& rotation) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Failed to open file: " + filename);

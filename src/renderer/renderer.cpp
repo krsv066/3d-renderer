@@ -45,7 +45,7 @@ void Renderer::RenderTriangle(const Object& obj, const primitive::Triangle& tria
 Vector4 Renderer::ProjectVertex(const Vector3& point, const Camera& camera,
                                 const Screen& screen) const {
     Vector4 pos(point.x(), point.y(), point.z(), 1.0);
-    Vector4 projected = camera.GetProjectionMatrix() * pos;
+    Vector4 projected = camera.GetViewProjectionMatrix() * pos;
 
     if (projected.w() != 0) {
         projected.x() /= projected.w();

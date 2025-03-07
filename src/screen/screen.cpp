@@ -67,7 +67,7 @@ void Screen::Clear() {
 }
 
 inline int Screen::GetZBufIdx(int x, int y) const {
-    return (height_ - y) * width_ + x;
+    return (height_ - y - 1) * width_ + x;
 }
 
 inline int Screen::GetFBufIdx(int x, int y) const {

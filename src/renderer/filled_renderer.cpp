@@ -3,8 +3,9 @@
 #include <cmath>
 
 namespace renderer {
-void Renderer::RenderTriangleFilled(const Vector4& point0, const Vector4& point1,
-                                    const Vector4& point2, uint32_t color, Screen& screen) const {
+void Renderer::RenderTriangleFilled(const linalg::Vector4& point0, const linalg::Vector4& point1,
+                                    const linalg::Vector4& point2, uint32_t color,
+                                    Screen& screen) const {
     const int min_x =
         std::max(0, static_cast<int>(std::floor(std::min({point0.x(), point1.x(), point2.x()}))));
     const int max_x =
@@ -26,9 +27,9 @@ void Renderer::RenderTriangleFilled(const Vector4& point0, const Vector4& point1
     }
 }
 
-void Renderer::ProcessPixel(int x, int y, const Vector4& point0, const Vector4& point1,
-                            const Vector4& point2, double area, uint32_t color,
-                            Screen& screen) const {
+void Renderer::ProcessPixel(int x, int y, const linalg::Vector4& point0,
+                            const linalg::Vector4& point1, const linalg::Vector4& point2,
+                            double area, uint32_t color, Screen& screen) const {
     double w0 = EdgeFunction(point1.x(), point1.y(), point2.x(), point2.y(), x, y);
     double w1 = EdgeFunction(point2.x(), point2.y(), point0.x(), point0.y(), x, y);
     double w2 = EdgeFunction(point0.x(), point0.y(), point1.x(), point1.y(), x, y);
@@ -38,9 +39,9 @@ void Renderer::ProcessPixel(int x, int y, const Vector4& point0, const Vector4& 
     }
 }
 
-void Renderer::UpdatePixel(int x, int y, double w0, double w1, double w2, const Vector4& point0,
-                           const Vector4& point1, const Vector4& point2, uint32_t color,
-                           Screen& screen) const {
+void Renderer::UpdatePixel(int x, int y, double w0, double w1, double w2,
+                           const linalg::Vector4& point0, const linalg::Vector4& point1,
+                           const linalg::Vector4& point2, uint32_t color, Screen& screen) const {
     const double z = w0 * point0.z() + w1 * point1.z() + w2 * point2.z();
     if (z < screen.GetZBufferDepth(x, y)) {
         screen.SetZBufferDepth(x, y, z);

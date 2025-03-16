@@ -5,9 +5,9 @@
 
 namespace renderer::primitive {
 struct Triangle {
-    Vector3 a;
-    Vector3 b;
-    Vector3 c;
+    linalg::Vector3 a;
+    linalg::Vector3 b;
+    linalg::Vector3 c;
     uint32_t color;
 };
 }  // namespace renderer::primitive

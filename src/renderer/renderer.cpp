@@ -6,14 +6,16 @@ namespace renderer {
 Renderer::Renderer(Mode render_mode) {
     switch (render_mode) {
         case Mode::Filled:
-            render_triangle_ = [this](const Vector4& point0, const Vector4& point1,
-                                      const Vector4& point2, uint32_t color, Screen& screen) {
+            render_triangle_ = [this](const linalg::Vector4& point0, const linalg::Vector4& point1,
+                                      const linalg::Vector4& point2, uint32_t color,
+                                      Screen& screen) {
                 this->RenderTriangleFilled(point0, point1, point2, color, screen);
             };
             break;
         case Mode::Wireframe:
-            render_triangle_ = [this](const Vector4& point0, const Vector4& point1,
-                                      const Vector4& point2, uint32_t color, Screen& screen) {
+            render_triangle_ = [this](const linalg::Vector4& point0, const linalg::Vector4& point1,
+                                      const linalg::Vector4& point2, uint32_t color,
+                                      Screen& screen) {
                 this->RenderTriangleWireframe(point0, point1, point2, color, screen);
             };
             break;
@@ -35,17 +37,20 @@ Screen Renderer::Render(const World& scene, const Camera& camera, Screen&& scree
 
 void Renderer::RenderTriangle(const Object& obj, const primitive::Triangle& triangle,
                               const Camera& camera, Screen& screen) const {
-    const Vector4 point0 = ProjectVertex(GetGlobalCoordinates(obj, triangle.a), camera, screen);
-    const Vector4 point1 = ProjectVertex(GetGlobalCoordinates(obj, triangle.b), camera, screen);
-    const Vector4 point2 = ProjectVertex(GetGlobalCoordinates(obj, triangle.c), camera, screen);
+    const linalg::Vector4 point0 =
+        ProjectVertex(GetGlobalCoordinates(obj, triangle.a), camera, screen);
+    const linalg::Vector4 point1 =
+        ProjectVertex(GetGlobalCoordinates(obj, triangle.b), camera, screen);
+    const linalg::Vector4 point2 =
+        ProjectVertex(GetGlobalCoordinates(obj, triangle.c), camera, screen);
 
     render_triangle_(point0, point1, point2, triangle.color, screen);
 }
 
-Vector4 Renderer::ProjectVertex(const Vector3& point, const Camera& camera,
-                                const Screen& screen) const {
-    Vector4 pos(point.x(), point.y(), point.z(), 1.0);
-    Vector4 projected = camera.GetViewProjectionMatrix() * pos;
+linalg::Vector4 Renderer::ProjectVertex(const linalg::Vector3& point, const Camera& camera,
+                                        const Screen& screen) const {
+    linalg::Vector4 pos(point.x(), point.y(), point.z(), 1.0);
+    linalg::Vector4 projected = camera.GetViewProjectionMatrix() * pos;
 
     if (projected.w() != 0) {
         projected.x() /= projected.w();
@@ -59,7 +64,8 @@ Vector4 Renderer::ProjectVertex(const Vector3& point, const Camera& camera,
     return projected;
 }
 
-inline Vector3 Renderer::GetGlobalCoordinates(const Object& obj, const Vector3& point) const {
+inline linalg::Vector3 Renderer::GetGlobalCoordinates(const Object& obj,
+                                                      const linalg::Vector3& point) const {
     return obj.GetRotation() * point + obj.GetTranslation();
 }
 }  // namespace renderer

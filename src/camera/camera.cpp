@@ -6,7 +6,7 @@ Camera::Camera(Fov fov, Aspect aspect, Near near, Far far)
     : fov_(fov), aspect_(aspect), near_(near), far_(far) {
 
     const double tan_half_fov = std::tan(fov.value / 2.0);
-    projection_matrix_ = Matrix4::Zero();
+    projection_matrix_ = linalg::kZeroMatrix4;
     projection_matrix_(0, 0) = 1.0 / (aspect.value * tan_half_fov);
     projection_matrix_(1, 1) = 1.0 / tan_half_fov;
     projection_matrix_(2, 2) = -(far.value + near.value) / (far.value - near.value);
@@ -18,12 +18,12 @@ Camera::Camera(Fov fov, Aspect aspect, Near near, Far far)
 }
 
 void Camera::UpdateViewMatrix() {
-    Vector3 target = position_ + front_;
-    Vector3 f = (target - position_).normalized();
-    Vector3 r = f.cross(up_).normalized();
-    Vector3 u = r.cross(f);
+    linalg::Vector3 target = position_ + front_;
+    linalg::Vector3 f = (target - position_).normalized();
+    linalg::Vector3 r = f.cross(up_).normalized();
+    linalg::Vector3 u = r.cross(f);
 
-    view_matrix_ = Matrix4::Identity();
+    view_matrix_ = linalg::kIdentityMatrix4;
     view_matrix_(0, 0) = r.x();
     view_matrix_(0, 1) = r.y();
     view_matrix_(0, 2) = r.z();
@@ -42,7 +42,7 @@ void Camera::UpdateViewProjectionMatrix() {
     view_projection_matrix_ = projection_matrix_ * view_matrix_;
 }
 
-const Matrix4& Camera::GetViewProjectionMatrix() const {
+const linalg::Matrix4& Camera::GetViewProjectionMatrix() const {
     return view_projection_matrix_;
 }
 

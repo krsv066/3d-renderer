@@ -5,7 +5,8 @@
 
 namespace renderer::parser {
 renderer::Object Parser::LoadObj(const std::string& filename, uint32_t color,
-                                 const Vector3& translation, const Matrix3& rotation) {
+                                 const linalg::Vector3& translation,
+                                 const linalg::Matrix3& rotation) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Failed to open file: " + filename);
@@ -22,8 +23,8 @@ renderer::Object Parser::LoadObj(const std::string& filename, uint32_t color,
     return renderer::Object{triangles, translation, rotation};
 }
 
-std::vector<Vector3> Parser::ParseVertices(const std::string& content) {
-    std::vector<Vector3> vertices;
+std::vector<linalg::Vector3> Parser::ParseVertices(const std::string& content) {
+    std::vector<linalg::Vector3> vertices;
     std::stringstream ss(content);
     std::string line;
 
@@ -42,7 +43,7 @@ std::vector<Vector3> Parser::ParseVertices(const std::string& content) {
 }
 
 std::vector<primitive::Triangle> Parser::ParseFaces(const std::string& content,
-                                                    const std::vector<Vector3>& vertices,
+                                                    const std::vector<linalg::Vector3>& vertices,
                                                     uint32_t color) {
     std::vector<primitive::Triangle> triangles;
     std::stringstream ss(content);

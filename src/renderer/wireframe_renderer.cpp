@@ -2,8 +2,8 @@
 #include <cmath>
 
 namespace renderer {
-void Renderer::RenderTriangleWireframe(const Vector4& point0, const Vector4& point1,
-                                       const Vector4& point2, uint32_t color,
+void Renderer::RenderTriangleWireframe(const linalg::Vector4& point0, const linalg::Vector4& point1,
+                                       const linalg::Vector4& point2, uint32_t color,
                                        Screen& screen) const {
     DrawLine(point0.x(), point0.y(), point1.x(), point1.y(), color, screen);
     DrawLine(point1.x(), point1.y(), point2.x(), point2.y(), color, screen);

@@ -30,7 +30,7 @@ struct Far {
 class Camera {
 public:
     Camera(Fov fov, Aspect aspect, Near near, Far far);
-    const Matrix4& GetViewProjectionMatrix() const;
+    const linalg::Matrix4& GetViewProjectionMatrix() const;
     void MoveForward(double distance);
     void MoveBackward(double distance);
     void MoveRight(double distance);
@@ -42,13 +42,13 @@ private:
     void UpdateViewMatrix();
     void UpdateViewProjectionMatrix();
 
-    Matrix4 projection_matrix_;
-    Matrix4 view_matrix_;
-    Matrix4 view_projection_matrix_;
-    Vector3 position_ = Vector3(0, 0, 0);
-    Vector3 front_ = Vector3(0, 0, -1);
-    Vector3 up_ = Vector3(0, 1, 0);
-    Vector3 right_ = Vector3(1, 0, 0);
+    linalg::Matrix4 projection_matrix_;
+    linalg::Matrix4 view_matrix_;
+    linalg::Matrix4 view_projection_matrix_;
+    linalg::Vector3 position_ = linalg::Vector3(0, 0, 0);
+    linalg::Vector3 front_ = linalg::Vector3(0, 0, -1);
+    linalg::Vector3 up_ = linalg::Vector3(0, 1, 0);
+    linalg::Vector3 right_ = linalg::Vector3(1, 0, 0);
     Fov fov_;
     Aspect aspect_;
     Near near_;

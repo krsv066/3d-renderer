@@ -63,8 +63,6 @@ linalg::Vector4 Renderer::ProjectVertex(const linalg::Vector3& point, const Came
         projected.x() /= projected.w();
         projected.y() /= projected.w();
         projected.z() /= projected.w();
-    } else {
-        assert(false);
     }
 
     projected.x() = (projected.x() + 1.0) * screen.GetWidth() * 0.5;

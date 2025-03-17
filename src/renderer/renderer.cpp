@@ -51,6 +51,10 @@ void Renderer::RenderTriangle(const Object& obj, const primitive::Triangle& tria
     const linalg::Vector4 point2 =
         ProjectVertex(GetGlobalCoordinates(obj, triangle.c), camera, screen);
 
+    if (point0.z() < 0.1 && point1.z() < 0.1 && point2.z() < 0.1) {
+        return;
+    }
+
     render_triangle_(point0, point1, point2, triangle.color, screen);
 }
 
@@ -59,6 +63,7 @@ linalg::Vector4 Renderer::ProjectVertex(const linalg::Vector3& point, const Came
     linalg::Vector4 pos(point.x(), point.y(), point.z(), 1.0);
     linalg::Vector4 projected = camera.GetViewProjectionMatrix() * pos;
 
+    double clip_z = projected.z();
     if (projected.w() != 0) {
         projected.x() /= projected.w();
         projected.y() /= projected.w();
@@ -67,6 +72,7 @@ linalg::Vector4 Renderer::ProjectVertex(const linalg::Vector3& point, const Came
 
     projected.x() = (projected.x() + 1.0) * screen.GetWidth() * 0.5;
     projected.y() = (projected.y() + 1.0) * screen.GetHeight() * 0.5;
+    projected.z() = clip_z;
 
     return projected;
 }

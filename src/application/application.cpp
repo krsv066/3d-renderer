@@ -11,8 +11,8 @@ static constexpr Height kDefaultHeight{720};
 static constexpr std::string kDefaultTitel = "3D Renderer";
 
 Application::Application()
-    : renderer_(Renderer::Mode::Wireframe),
-      world_{parser::Parser::LoadObj("../src/models/cube.obj", 0xFF00FF)},
+    : renderer_(Renderer::Mode::Filled),
+      world_{parser::Parser::LoadObj("../build/cow.obj", 0xFFFFFF)},
       camera_(Fov{60.0 * M_PI / 180.0}, Aspect{static_cast<double>(kDefaultWidth) / kDefaultHeight},
               Near{0.1}, Far{100.0}) {
 }

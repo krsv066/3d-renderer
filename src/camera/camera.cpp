@@ -5,7 +5,7 @@
 namespace renderer {
 Camera::Camera(Fov fov, Aspect aspect, Near near, Far far)
     : fov_(fov), aspect_(aspect), near_(near), far_(far) {
-    
+
     assert(fov.value > 0 && fov.value < M_PI);
     assert(aspect.value > 0);
     assert(near.value > 0);

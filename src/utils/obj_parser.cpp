@@ -2,11 +2,13 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <cassert>
 
 namespace renderer::parser {
 renderer::Object Parser::LoadObj(const std::string& filename, uint32_t color,
                                  const linalg::Vector3& translation,
                                  const linalg::Matrix3& rotation) {
+    assert(!filename.empty());
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Failed to open file: " + filename);
@@ -17,7 +19,9 @@ renderer::Object Parser::LoadObj(const std::string& filename, uint32_t color,
     std::string content = buffer.str();
 
     auto vertices = ParseVertices(content);
+    assert(!vertices.empty());
     auto triangles = ParseFaces(content, vertices, color);
+    assert(!triangles.empty());
     renderer::Object obj{triangles, translation, rotation};
 
     return renderer::Object{triangles, translation, rotation};
@@ -45,6 +49,7 @@ std::vector<linalg::Vector3> Parser::ParseVertices(const std::string& content) {
 std::vector<primitive::Triangle> Parser::ParseFaces(const std::string& content,
                                                     const std::vector<linalg::Vector3>& vertices,
                                                     uint32_t color) {
+    assert(!vertices.empty());
     std::vector<primitive::Triangle> triangles;
     std::stringstream ss(content);
     std::string line;
@@ -58,9 +63,12 @@ std::vector<primitive::Triangle> Parser::ParseFaces(const std::string& content,
         std::vector<int> indices;
         int idx;
         while (face >> idx) {
+            assert(idx > 0);
+            assert(static_cast<size_t>(idx) <= vertices.size());
             indices.push_back(idx - 1);
         }
 
+        assert(indices.size() >= 3);
         for (size_t i = 1; i < indices.size() - 1; ++i) {
             triangles.push_back(
                 {vertices[indices[0]], vertices[indices[i]], vertices[indices[i + 1]], color});

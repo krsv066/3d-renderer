@@ -1,9 +1,15 @@
 #include "camera.h"
 #include <cmath>
+#include <cassert>
 
 namespace renderer {
 Camera::Camera(Fov fov, Aspect aspect, Near near, Far far)
     : fov_(fov), aspect_(aspect), near_(near), far_(far) {
+    
+    assert(fov.value > 0 && fov.value < M_PI);
+    assert(aspect.value > 0);
+    assert(near.value > 0);
+    assert(near.value < far.value);
 
     const double tan_half_fov = std::tan(fov.value / 2.0);
     projection_matrix_ = linalg::kZeroMatrix4;

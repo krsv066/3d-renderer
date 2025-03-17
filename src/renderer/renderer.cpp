@@ -19,7 +19,12 @@ Renderer::Renderer(Mode render_mode) {
                 this->RenderTriangleWireframe(point0, point1, point2, color, screen);
             };
             break;
+        default:
+            assert(false);
+            break;
     }
+
+    assert(render_triangle_ != nullptr);
 }
 
 Screen Renderer::Render(const World& scene, const Camera& camera, Screen&& screen) const {
@@ -37,6 +42,8 @@ Screen Renderer::Render(const World& scene, const Camera& camera, Screen&& scree
 
 void Renderer::RenderTriangle(const Object& obj, const primitive::Triangle& triangle,
                               const Camera& camera, Screen& screen) const {
+    assert(render_triangle_ != nullptr);
+
     const linalg::Vector4 point0 =
         ProjectVertex(GetGlobalCoordinates(obj, triangle.a), camera, screen);
     const linalg::Vector4 point1 =
@@ -56,6 +63,8 @@ linalg::Vector4 Renderer::ProjectVertex(const linalg::Vector3& point, const Came
         projected.x() /= projected.w();
         projected.y() /= projected.w();
         projected.z() /= projected.w();
+    } else {
+        assert(false);
     }
 
     projected.x() = (projected.x() + 1.0) * screen.GetWidth() * 0.5;

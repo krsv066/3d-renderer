@@ -3,6 +3,7 @@
 #include "screen.h"
 #include <algorithm>
 #include <limits>
+#include <cassert>
 
 namespace renderer {
 Screen::Screen(Width width, Height height)
@@ -10,6 +11,8 @@ Screen::Screen(Width width, Height height)
       height_(height),
       z_buffer_(width_ * height_, std::numeric_limits<double>::infinity()),
       frame_buffer_(width_ * height_ * 4, 0) {
+    assert(width_ > 0);
+    assert(height_ > 0);
 }
 
 Screen::Screen(Screen&& other) noexcept
@@ -38,6 +41,7 @@ double Screen::GetZBufferDepth(int x, int y) const {
 }
 
 const uint8_t* Screen::GetFrameBuffer() const {
+    assert(!frame_buffer_.empty());
     return frame_buffer_.data();
 }
 
@@ -67,6 +71,8 @@ void Screen::Clear() {
 }
 
 inline int Screen::GetZBufIdx(int x, int y) const {
+    assert(x >= 0 && x < width_);
+    assert(y >= 0 && y < height_);
     return (height_ - y - 1) * width_ + x;
 }
 

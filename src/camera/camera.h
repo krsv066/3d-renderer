@@ -37,6 +37,9 @@ public:
     void MoveLeft(double distance);
     void MoveUp(double distance);
     void MoveDown(double distance);
+    void RotateHorizontal(double angle);
+    void RotateVertical(double angle);
+    void RotateRoll(double angle);
 
 private:
     void UpdateViewMatrix();

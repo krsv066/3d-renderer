@@ -14,6 +14,6 @@ private:
     World world_;
     Camera camera_;
 
-    void ProcessInput(sf::RenderWindow& window, float delta_time);
+    void ProcessInput(sf::RenderWindow& window, double delta_time);
 };
 }  // namespace renderer

@@ -87,4 +87,25 @@ void Camera::MoveDown(double distance) {
     UpdateViewMatrix();
     UpdateViewProjectionMatrix();
 }
+
+void Camera::RotateHorizontal(double angle) {
+    front_ = (front_ * std::cos(angle) + right_ * std::sin(angle)).normalized();
+    right_ = front_.cross(up_).normalized();
+    UpdateViewMatrix();
+    UpdateViewProjectionMatrix();
+}
+
+void Camera::RotateVertical(double angle) {
+    front_ = (front_ * std::cos(angle) + up_ * std::sin(angle)).normalized();
+    up_ = right_.cross(front_).normalized();
+    UpdateViewMatrix();
+    UpdateViewProjectionMatrix();
+}
+
+void Camera::RotateRoll(double angle) {
+    up_ = (up_ * std::cos(angle) - right_ * std::sin(angle)).normalized();
+    right_ = front_.cross(up_).normalized();
+    UpdateViewMatrix();
+    UpdateViewProjectionMatrix();
+}
 }  // namespace renderer

@@ -17,8 +17,9 @@ Application::Application()
               Near{0.1}, Far{100.0}) {
 }
 
-void Application::ProcessInput(sf::RenderWindow& window, float delta_time) {
-    float distance = 2.5 * delta_time;
+void Application::ProcessInput(sf::RenderWindow& window, double delta_time) {
+    double distance = 2.5 * delta_time;
+    double rotation_speed = 1.5 * delta_time;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)) {
         camera_.MoveForward(distance);
@@ -38,6 +39,24 @@ void Application::ProcessInput(sf::RenderWindow& window, float delta_time) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl)) {
         camera_.MoveDown(distance);
     }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left)) {
+        camera_.RotateHorizontal(-rotation_speed);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right)) {
+        camera_.RotateHorizontal(rotation_speed);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up)) {
+        camera_.RotateVertical(rotation_speed);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Down)) {
+        camera_.RotateVertical(-rotation_speed);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Q)) {
+        camera_.RotateRoll(rotation_speed);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::E)) {
+        camera_.RotateRoll(-rotation_speed);
+    }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Escape)) {
         window.close();
     }
@@ -53,8 +72,8 @@ void Application::Run() {
 
     while (window.isOpen()) {
         auto current_frame_time = std::chrono::high_resolution_clock::now();
-        float delta_time =
-            std::chrono::duration<float>(current_frame_time - last_frame_time).count();
+        double delta_time =
+            std::chrono::duration<double>(current_frame_time - last_frame_time).count();
         last_frame_time = current_frame_time;
 
         while (const std::optional event = window.pollEvent()) {

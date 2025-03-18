@@ -42,9 +42,6 @@ public:
     void RotateRoll(double angle);
 
 private:
-    void UpdateViewMatrix();
-    void UpdateViewProjectionMatrix();
-
     linalg::Matrix4 projection_matrix_;
     linalg::Matrix4 view_matrix_;
     linalg::Matrix4 view_projection_matrix_;
@@ -56,5 +53,8 @@ private:
     Aspect aspect_;
     Near near_;
     Far far_;
+
+    void UpdateViewMatrix();
+    void UpdateViewProjectionMatrix();
 };
 }  // namespace renderer

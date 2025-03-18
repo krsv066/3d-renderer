@@ -3,20 +3,20 @@
 #include <cassert>
 
 namespace renderer {
-Camera::Camera(Fov fov, Aspect aspect, Near near, Far far)
-    : fov_(fov), aspect_(aspect), near_(near), far_(far) {
+Camera::Camera(Width width, Height height, Fov fov, Near near, Far far)
+    : aspect_(static_cast<double>(width) / height), fov_(fov), near_(near), far_(far) {
 
-    assert(fov.value > 0 && fov.value < M_PI);
-    assert(aspect.value > 0);
-    assert(near.value > 0);
-    assert(near.value < far.value);
+    assert(fov_.value > 0 && fov.value < M_PI);
+    assert(aspect_.value > 0);
+    assert(near_.value > 0);
+    assert(near_.value < far.value);
 
     const double tan_half_fov = std::tan(fov.value / 2.0);
     projection_matrix_ = linalg::kZeroMatrix4;
-    projection_matrix_(0, 0) = 1.0 / (aspect.value * tan_half_fov);
+    projection_matrix_(0, 0) = 1.0 / (aspect_.value * tan_half_fov);
     projection_matrix_(1, 1) = 1.0 / tan_half_fov;
-    projection_matrix_(2, 2) = -(far.value + near.value) / (far.value - near.value);
-    projection_matrix_(2, 3) = -(2.0 * far.value * near.value) / (far.value - near.value);
+    projection_matrix_(2, 2) = -(far_.value + near_.value) / (far_.value - near_.value);
+    projection_matrix_(2, 3) = -(2.0 * far_.value * near_.value) / (far_.value - near_.value);
     projection_matrix_(3, 2) = -1.0;
 
     UpdateViewMatrix();

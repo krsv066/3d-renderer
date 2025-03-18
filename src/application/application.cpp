@@ -9,17 +9,18 @@ namespace renderer {
 static constexpr Width kDefaultWidth{1280};
 static constexpr Height kDefaultHeight{720};
 static constexpr std::string kDefaultTitel = "3D Renderer";
+static constexpr double kDistanceScale = 2.5;
+static constexpr double kRotationScale = 1.0;
 
 Application::Application()
     : renderer_(Renderer::Mode::Filled),
-      world_{parser::Parser::LoadObj("../build/cow.obj", 0xFFFFFF)},
-      camera_(Fov{60.0 * M_PI / 180.0}, Aspect{static_cast<double>(kDefaultWidth) / kDefaultHeight},
-              Near{0.1}, Far{100.0}) {
+      world_{parser::Parser::LoadObj("../build/cow.obj")},
+      camera_(kDefaultWidth, kDefaultHeight) {
 }
 
 void Application::ProcessInput(sf::RenderWindow& window, double delta_time) {
-    double distance = 2.5 * delta_time;
-    double rotation_speed = 1.5 * delta_time;
+    const double distance = kDistanceScale * delta_time;
+    const double rotation = kRotationScale * delta_time;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)) {
         camera_.MoveForward(distance);
@@ -40,22 +41,22 @@ void Application::ProcessInput(sf::RenderWindow& window, double delta_time) {
         camera_.MoveDown(distance);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left)) {
-        camera_.RotateHorizontal(-rotation_speed);
+        camera_.RotateHorizontal(-rotation);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right)) {
-        camera_.RotateHorizontal(rotation_speed);
+        camera_.RotateHorizontal(rotation);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up)) {
-        camera_.RotateVertical(rotation_speed);
+        camera_.RotateVertical(rotation);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Down)) {
-        camera_.RotateVertical(-rotation_speed);
+        camera_.RotateVertical(-rotation);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Q)) {
-        camera_.RotateRoll(rotation_speed);
+        camera_.RotateRoll(rotation);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::E)) {
-        camera_.RotateRoll(-rotation_speed);
+        camera_.RotateRoll(-rotation);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Escape)) {
         window.close();

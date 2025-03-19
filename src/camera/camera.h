@@ -4,34 +4,40 @@
 #include "screen.h"
 
 namespace renderer {
+static constexpr double kStraightAngle = 180.0;
+
 struct Aspect {
     double value;
-    explicit Aspect(double value) : value(value) {
+    explicit constexpr Aspect(double value) : value(value) {
     }
 };
 
 struct Fov {
     double value;
-    Fov(double value) : value(value * M_PI / 180.0) {
+    explicit constexpr Fov(double value) : value(value * M_PI / kStraightAngle) {
     }
 };
 
 struct Near {
     double value;
-    explicit Near(double value) : value(value) {
+    explicit constexpr Near(double value) : value(value) {
     }
 };
 
 struct Far {
     double value;
-    explicit Far(double value) : value(value) {
+    explicit constexpr Far(double value) : value(value) {
     }
 };
 
+static constexpr Fov kDefaultFov = Fov{60.0};
+static constexpr Near kDefaultNearBound = Near{0.1};
+static constexpr Far kDefaultFarBound = Far{100.0};
+
 class Camera {
 public:
-    Camera(Width width, Height height, Fov fov = Fov{60.0}, Near near = Near{0.1},
-           Far far = Far{100.0});
+    Camera(Width width, Height height, Fov fov = kDefaultFov, Near near = kDefaultNearBound,
+           Far far = kDefaultFarBound);
     const linalg::Matrix4& GetViewProjectionMatrix() const;
     void MoveForward(double distance);
     void MoveBackward(double distance);

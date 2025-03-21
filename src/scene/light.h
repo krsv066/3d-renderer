@@ -4,7 +4,7 @@
 
 namespace renderer {
 struct Light {
-    enum class Type : uint8_t { Ambient, Directional, Point };
+    enum class Type : uint8_t { Ambient, Directional };
     Type type;
     linalg::Vector3 position;
     linalg::Vector3 direction;
@@ -19,11 +19,6 @@ struct Light {
                              double intensity) {
         return Light{Type::Directional, linalg::kZeroVector3, direction.normalized(), color,
                      intensity};
-    }
-
-    static Light Point(const linalg::Vector3& position, const linalg::Vector3& color,
-                       double intensity) {
-        return Light{Type::Point, position, linalg::kZeroVector3, color, intensity};
     }
 };
 }  // namespace renderer

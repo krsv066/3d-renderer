@@ -117,15 +117,9 @@ uint32_t Renderer::CalculateLighting(uint32_t base_color, const linalg::Vector3&
                 final_color += light.color.cwiseProduct(base_color_vec) * diffuse * light.intensity;
                 break;
             }
-            case Light::Type::Point: {
-                linalg::Vector3 light_dir = (position - light.position).normalized();
-                double distance = (position - light.position).norm();
-                double attenuation = 1.0 / (1.0 + 0.1 * distance + 0.01 * distance * distance);
-                double diffuse = std::max(0.0, -light_dir.dot(normal));
-                final_color += light.color.cwiseProduct(base_color_vec) * diffuse *
-                               light.intensity * attenuation;
+            default:
+                assert(false);
                 break;
-            }
         }
     }
 

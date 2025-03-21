@@ -17,8 +17,10 @@ Application::Application()
       world_{parser::Parser::LoadObj("../build/cow.obj")},
       camera_(kDefaultWidth, kDefaultHeight) {
 
+    // world_.AddLight(
+    // Light::Directional(linalg::Vector3(-1.0, -1.0, -1.0), linalg::Vector3(1.0, 0.9, 0.7), 0.6));
     world_.AddLight(
-        Light::Directional(linalg::Vector3(-1.0, -1.0, -1.0), linalg::Vector3(1.0, 0.9, 0.7), 1.0));
+        Light::Point(linalg::Vector3(0.0, 0.0, 5.0), linalg::Vector3(0.2, 0.2, 0.6), 5.0));
 }
 
 void Application::ProcessInput(sf::RenderWindow& window, double delta_time) {
@@ -60,6 +62,12 @@ void Application::ProcessInput(sf::RenderWindow& window, double delta_time) {
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::E)) {
         camera_.RotateRoll(-rotation);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) {
+        renderer_.SetMode(Renderer::Mode::Wireframe);
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num2)) {
+        renderer_.SetMode(Renderer::Mode::Filled);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Escape)) {
         window.close();

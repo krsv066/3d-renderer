@@ -4,6 +4,10 @@
 
 namespace renderer {
 Renderer::Renderer(Mode render_mode) {
+    SetMode(render_mode);
+}
+
+void Renderer::SetMode(Mode render_mode) {
     switch (render_mode) {
         case Mode::Filled:
             render_triangle_ = [this](const linalg::Vector4& point0, const linalg::Vector4& point1,

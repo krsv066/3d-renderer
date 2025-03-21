@@ -14,6 +14,7 @@ public:
     Renderer(Mode mode = Mode::Wireframe);
     Screen Render(const World& scene, const Camera& camera,
                   Screen&& screen = Screen(Width{0}, Height{0})) const;
+    void SetMode(Mode mode);
 
 private:
     using RenderTriangleFunc = std::function<void(

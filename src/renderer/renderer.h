@@ -44,8 +44,7 @@ private:
                      const std::vector<Light>& lights) const;
     inline linalg::Vector3 GetGlobalCoordinates(const Object& obj,
                                                 const linalg::Vector3& point) const;
-    inline double EdgeFunction(double x0, double y0, double x1, double y1, double x,
-                               double y) const;
+    double EdgeFunction(double x0, double y0, double x1, double y1, double x, double y) const;
     uint32_t CalculateLighting(uint32_t base_color, const linalg::Vector3& position,
                                const linalg::Vector3& normal, const std::vector<Light>& lights,
                                const linalg::Vector3& camera_pos) const;

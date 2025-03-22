@@ -59,8 +59,8 @@ void Renderer::UpdatePixel(int x, int y, double w0, double w1, double w2,
     }
 }
 
-inline double Renderer::EdgeFunction(double x0, double y0, double x1, double y1, double x,
-                                     double y) const {
+double Renderer::EdgeFunction(double x0, double y0, double x1, double y1, double x,
+                              double y) const {
     return (y - y0) * (x1 - x0) - (x - x0) * (y1 - y0);
 }
 }  // namespace renderer

@@ -2,7 +2,7 @@
 
 namespace renderer {
 World::World(std::initializer_list<Object> list) : objects_(list) {
-    lights_.push_back(Light::Ambient({0.1, 0.1, 0.1}, 1.0));
+    lights_.push_back(Light::Ambient(kDefaultAmbient, 1.0));
 }
 
 const std::vector<Object> &World::GetObjects() const {

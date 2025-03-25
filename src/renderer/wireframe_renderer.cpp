@@ -4,7 +4,7 @@
 
 namespace renderer {
 void Renderer::RenderTriangleWireframe(const RenderContext& context) const {
-    auto draw_line = [&context](int x0, int y0, int x1, int y1, uint32_t color) {
+    auto draw_line = [&context](int x0, int y0, int x1, int y1, Color color) {
         bool steep = false;
         if (std::abs(x0 - x1) < std::abs(y0 - y1)) {
             std::swap(x0, y0);
@@ -29,12 +29,12 @@ void Renderer::RenderTriangleWireframe(const RenderContext& context) const {
             if (steep) {
                 if (y >= 0 && y < context.screen.GetWidth() && x >= 0 &&
                     x < context.screen.GetHeight()) {
-                    context.screen.SetFrameBufferPixel(y, x, color);
+                    context.screen.SetFrameBufferPixel(y, x, color.GetHex());
                 }
             } else {
                 if (x >= 0 && x < context.screen.GetWidth() && y >= 0 &&
                     y < context.screen.GetHeight()) {
-                    context.screen.SetFrameBufferPixel(x, y, color);
+                    context.screen.SetFrameBufferPixel(x, y, color.GetHex());
                 }
             }
 

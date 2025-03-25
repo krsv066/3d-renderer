@@ -1,5 +1,6 @@
 #pragma once
 
+#include "color.h"
 #include "object.h"
 #include <string>
 #include <vector>
@@ -7,7 +8,7 @@
 namespace renderer::parser {
 class Parser {
 public:
-    static renderer::Object LoadObj(const std::string& filename, uint32_t color = 0xFFFFFF,
+    static renderer::Object LoadObj(const std::string& filename, Color color = kWhiteColor,
                                     const linalg::Vector3& translation = linalg::kZeroVector3,
                                     const linalg::Matrix3& rotation = linalg::kIdentityMatrix3);
 

@@ -5,7 +5,7 @@
 #include <cassert>
 
 namespace renderer::parser {
-renderer::Object Parser::LoadObj(const std::string& filename, uint32_t color,
+renderer::Object Parser::LoadObj(const std::string& filename, Color color,
                                  const linalg::Vector3& translation,
                                  const linalg::Matrix3& rotation) {
     assert(!filename.empty());

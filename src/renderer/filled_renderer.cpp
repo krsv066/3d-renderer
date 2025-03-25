@@ -1,3 +1,4 @@
+#include "color.h"
 #include "renderer.h"
 #include <algorithm>
 #include <cassert>
@@ -44,33 +45,28 @@ void Renderer::RenderTriangleFilled(const RenderContext& context) const {
                         w0 * context.point0.y() + w1 * context.point1.y() + w2 * context.point2.y(),
                         z);
 
-                    uint32_t lit_color =
+                    Color lit_color =
                         CalculateLighting(context.color, context.normal, context.lights);
-                    context.screen.SetFrameBufferPixel(x, y, lit_color);
+                    context.screen.SetFrameBufferPixel(x, y, lit_color.GetHex());
                 }
             }
         }
     }
 }
 
-uint32_t Renderer::CalculateLighting(uint32_t base_color, const linalg::Vector3& normal,
-                                     const std::vector<Light>& lights) const {
-    uint8_t r = (base_color >> 16) & 0xFF;
-    uint8_t g = (base_color >> 8) & 0xFF;
-    uint8_t b = base_color & 0xFF;
-
-    linalg::Vector3 base_color_vec(r / 255.0, g / 255.0, b / 255.0);
-    linalg::Vector3 final_color(0.0, 0.0, 0.0);
+Color Renderer::CalculateLighting(Color base_color, const linalg::Vector3& normal,
+                                  const std::vector<Light>& lights) const {
+    Color final_color = kBlackColor;
 
     for (const auto& light : lights) {
         switch (light.type) {
             case Light::Type::Ambient: {
-                final_color += light.color.cwiseProduct(base_color_vec) * light.intensity;
+                final_color += light.color * base_color * light.intensity;
                 break;
             }
             case Light::Type::Directional: {
                 double diffuse = std::max(0.0, -light.direction.dot(normal));
-                final_color += light.color.cwiseProduct(base_color_vec) * diffuse * light.intensity;
+                final_color += light.color * base_color * diffuse * light.intensity;
                 break;
             }
             default:
@@ -79,14 +75,6 @@ uint32_t Renderer::CalculateLighting(uint32_t base_color, const linalg::Vector3&
         }
     }
 
-    final_color.x() = std::min(1.0, std::max(0.0, final_color.x()));
-    final_color.y() = std::min(1.0, std::max(0.0, final_color.y()));
-    final_color.z() = std::min(1.0, std::max(0.0, final_color.z()));
-
-    r = static_cast<uint8_t>(final_color.x() * 255);
-    g = static_cast<uint8_t>(final_color.y() * 255);
-    b = static_cast<uint8_t>(final_color.z() * 255);
-
-    return (r << 16) | (g << 8) | b;
+    return final_color;
 }
 }  // namespace renderer

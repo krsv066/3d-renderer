@@ -12,7 +12,7 @@ struct RenderContext {
     const linalg::Vector4& point0;
     const linalg::Vector4& point1;
     const linalg::Vector4& point2;
-    uint32_t color;
+    Color color;
     Screen& screen;
     const linalg::Vector3& normal;
     const std::vector<Light>& lights;
@@ -35,8 +35,8 @@ private:
     void RenderTriangleFilled(const RenderContext& context) const;
     linalg::Vector4 ProjectVertex(const linalg::Vector3& point, const Camera& camera,
                                   const Screen& screen) const;
-    uint32_t CalculateLighting(uint32_t base_color, const linalg::Vector3& normal,
-                               const std::vector<Light>& lights) const;
+    Color CalculateLighting(Color base_color, const linalg::Vector3& normal,
+                            const std::vector<Light>& lights) const;
 
     inline linalg::Vector3 GetGlobalCoordinates(const Object& obj,
                                                 const linalg::Vector3& point) const {

@@ -17,8 +17,8 @@ Application::Application()
       world_{parser::Parser::LoadObj("../build/cow.obj")},
       camera_(kDefaultWidth, kDefaultHeight) {
 
-    world_.AddLight(
-        Light::Directional(linalg::Vector3(-1.0, -1.0, -1.0), linalg::Vector3(1.0, 0.9, 0.7), 0.6));
+    world_.AddLight(Light::Directional(linalg::Vector3(-1.0, -1.0, -1.0),
+                                       Color{Red{1.0}, Green{0.9}, Blue{0.7}}, 0.6));
 }
 
 void Application::ProcessInput(sf::RenderWindow& window, double delta_time) {

@@ -66,11 +66,6 @@ void Renderer::RenderTriangle(const Object& obj, const primitive::Triangle& tria
     render_triangle_(point0, point1, point2, triangle.color, screen, normal, world.GetLights());
 }
 
-linalg::Vector3 Renderer::CalculateNormal(const linalg::Vector3& a, const linalg::Vector3& b,
-                                          const linalg::Vector3& c) const {
-    return (b - a).cross(c - a).normalized();
-}
-
 linalg::Vector4 Renderer::ProjectVertex(const linalg::Vector3& point, const Camera& camera,
                                         const Screen& screen) const {
     linalg::Vector4 pos(point.x(), point.y(), point.z(), 1.0);
@@ -88,49 +83,5 @@ linalg::Vector4 Renderer::ProjectVertex(const linalg::Vector3& point, const Came
     projected.z() = clip_z;
 
     return projected;
-}
-
-inline linalg::Vector3 Renderer::GetGlobalCoordinates(const Object& obj,
-                                                      const linalg::Vector3& point) const {
-    return obj.GetRotation() * point + obj.GetTranslation();
-}
-
-uint32_t Renderer::CalculateLighting(uint32_t base_color, const linalg::Vector3& position,
-                                     const linalg::Vector3& normal,
-                                     const std::vector<Light>& lights,
-                                     const linalg::Vector3& camera_pos) const {
-    uint8_t r = (base_color >> 16) & 0xFF;
-    uint8_t g = (base_color >> 8) & 0xFF;
-    uint8_t b = base_color & 0xFF;
-
-    linalg::Vector3 base_color_vec(r / 255.0, g / 255.0, b / 255.0);
-    linalg::Vector3 final_color(0.0, 0.0, 0.0);
-
-    for (const auto& light : lights) {
-        switch (light.type) {
-            case Light::Type::Ambient: {
-                final_color += light.color.cwiseProduct(base_color_vec) * light.intensity;
-                break;
-            }
-            case Light::Type::Directional: {
-                double diffuse = std::max(0.0, -light.direction.dot(normal));
-                final_color += light.color.cwiseProduct(base_color_vec) * diffuse * light.intensity;
-                break;
-            }
-            default:
-                assert(false);
-                break;
-        }
-    }
-
-    final_color.x() = std::min(1.0, std::max(0.0, final_color.x()));
-    final_color.y() = std::min(1.0, std::max(0.0, final_color.y()));
-    final_color.z() = std::min(1.0, std::max(0.0, final_color.z()));
-
-    r = static_cast<uint8_t>(final_color.x() * 255);
-    g = static_cast<uint8_t>(final_color.y() * 255);
-    b = static_cast<uint8_t>(final_color.z() * 255);
-
-    return (r << 16) | (g << 8) | b;
 }
 }  // namespace renderer

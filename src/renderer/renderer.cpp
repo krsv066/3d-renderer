@@ -9,14 +9,14 @@ Renderer::Renderer(Mode render_mode) {
 
 void Renderer::SetMode(Mode render_mode) {
     switch (render_mode) {
-        case Mode::Filled:
-            render_triangle_ = [this](const RenderContext& context) {
-                this->RenderTriangleFilled(context);
-            };
-            break;
         case Mode::Wireframe:
             render_triangle_ = [this](const RenderContext& context) {
                 this->RenderTriangleWireframe(context);
+            };
+            break;
+        case Mode::Filled:
+            render_triangle_ = [this](const RenderContext& context) {
+                this->RenderTriangleFilled(context);
             };
             break;
         default:

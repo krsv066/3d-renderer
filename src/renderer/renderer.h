@@ -20,10 +20,9 @@ struct RenderContext {
 
 class Renderer {
 public:
-    enum class Mode : uint8_t { Filled, Wireframe };
+    enum class Mode : uint8_t { Wireframe, Filled };
     Renderer(Mode mode = Mode::Wireframe);
-    Screen Render(const World& scene, const Camera& camera,
-                  Screen&& screen = Screen(Width{0}, Height{0})) const;
+    Screen Render(const World& scene, const Camera& camera, Screen&& screen) const;
     void SetMode(Mode mode);
 
 private:

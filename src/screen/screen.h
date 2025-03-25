@@ -9,7 +9,7 @@ enum Height : int;
 
 class Screen {
 public:
-    Screen(Width width, Height height);
+    Screen(Width width = Width{0}, Height height = Height{0});
     Screen(Screen&& other) noexcept;
     Screen& operator=(Screen&& other) noexcept;
     double GetZBufferDepth(int x, int y) const;

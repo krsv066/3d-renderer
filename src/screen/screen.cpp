@@ -1,5 +1,3 @@
-#pragma once
-
 #include "screen.h"
 #include <algorithm>
 #include <limits>

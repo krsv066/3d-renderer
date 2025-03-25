@@ -4,44 +4,49 @@
 #include <cmath>
 
 namespace renderer {
-void Renderer::RenderTriangleFilled(const linalg::Vector4& point0, const linalg::Vector4& point1,
-                                    const linalg::Vector4& point2, uint32_t color, Screen& screen,
-                                    const linalg::Vector3& normal,
-                                    const std::vector<Light>& lights) const {
-    const int min_x =
-        std::max(0, static_cast<int>(std::floor(std::min({point0.x(), point1.x(), point2.x()}))));
-    const int max_x =
-        std::min(static_cast<int>(screen.GetWidth()) - 1,
-                 static_cast<int>(std::ceil(std::max({point0.x(), point1.x(), point2.x()}))));
-    const int min_y =
-        std::max(0, static_cast<int>(std::floor(std::min({point0.y(), point1.y(), point2.y()}))));
-    const int max_y =
-        std::min(static_cast<int>(screen.GetHeight()) - 1,
-                 static_cast<int>(std::ceil(std::max({point0.y(), point1.y(), point2.y()}))));
+void Renderer::RenderTriangleFilled(const RenderContext& context) const {
+    const int min_x = std::max(
+        0, static_cast<int>(
+               std::floor(std::min({context.point0.x(), context.point1.x(), context.point2.x()}))));
+    const int max_x = std::min(static_cast<int>(context.screen.GetWidth()) - 1,
+                               static_cast<int>(std::ceil(std::max(
+                                   {context.point0.x(), context.point1.x(), context.point2.x()}))));
+    const int min_y = std::max(
+        0, static_cast<int>(
+               std::floor(std::min({context.point0.y(), context.point1.y(), context.point2.y()}))));
+    const int max_y = std::min(static_cast<int>(context.screen.GetHeight()) - 1,
+                               static_cast<int>(std::ceil(std::max(
+                                   {context.point0.y(), context.point1.y(), context.point2.y()}))));
 
-    const double area =
-        EdgeFunction(point0.x(), point0.y(), point1.x(), point1.y(), point2.x(), point2.y());
+    const double area = EdgeFunction(context.point0.x(), context.point0.y(), context.point1.x(),
+                                     context.point1.y(), context.point2.x(), context.point2.y());
 
     for (int y = min_y; y <= max_y; ++y) {
         for (int x = min_x; x <= max_x; ++x) {
-            double w0 = EdgeFunction(point1.x(), point1.y(), point2.x(), point2.y(), x, y);
-            double w1 = EdgeFunction(point2.x(), point2.y(), point0.x(), point0.y(), x, y);
-            double w2 = EdgeFunction(point0.x(), point0.y(), point1.x(), point1.y(), x, y);
+            double w0 = EdgeFunction(context.point1.x(), context.point1.y(), context.point2.x(),
+                                     context.point2.y(), x, y);
+            double w1 = EdgeFunction(context.point2.x(), context.point2.y(), context.point0.x(),
+                                     context.point0.y(), x, y);
+            double w2 = EdgeFunction(context.point0.x(), context.point0.y(), context.point1.x(),
+                                     context.point1.y(), x, y);
 
             if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
                 w0 /= area;
                 w1 /= area;
                 w2 /= area;
-                const double z = w0 * point0.z() + w1 * point1.z() + w2 * point2.z();
-                if (z < screen.GetZBufferDepth(x, y)) {
-                    screen.SetZBufferDepth(x, y, z);
+                const double z =
+                    w0 * context.point0.z() + w1 * context.point1.z() + w2 * context.point2.z();
+                if (z < context.screen.GetZBufferDepth(x, y)) {
+                    context.screen.SetZBufferDepth(x, y, z);
 
-                    linalg::Vector3 position(w0 * point0.x() + w1 * point1.x() + w2 * point2.x(),
-                                             w0 * point0.y() + w1 * point1.y() + w2 * point2.y(),
-                                             z);
+                    linalg::Vector3 position(
+                        w0 * context.point0.x() + w1 * context.point1.x() + w2 * context.point2.x(),
+                        w0 * context.point0.y() + w1 * context.point1.y() + w2 * context.point2.y(),
+                        z);
 
-                    uint32_t lit_color = CalculateLighting(color, normal, lights);
-                    screen.SetFrameBufferPixel(x, y, lit_color);
+                    uint32_t lit_color =
+                        CalculateLighting(context.color, context.normal, context.lights);
+                    context.screen.SetFrameBufferPixel(x, y, lit_color);
                 }
             }
         }

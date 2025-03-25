@@ -10,20 +10,13 @@ Renderer::Renderer(Mode render_mode) {
 void Renderer::SetMode(Mode render_mode) {
     switch (render_mode) {
         case Mode::Filled:
-            render_triangle_ = [this](const linalg::Vector4& point0, const linalg::Vector4& point1,
-                                      const linalg::Vector4& point2, uint32_t color, Screen& screen,
-                                      const linalg::Vector3& normal,
-                                      const std::vector<Light>& lights) {
-                this->RenderTriangleFilled(point0, point1, point2, color, screen, normal, lights);
+            render_triangle_ = [this](const RenderContext& context) {
+                this->RenderTriangleFilled(context);
             };
             break;
         case Mode::Wireframe:
-            render_triangle_ = [this](const linalg::Vector4& point0, const linalg::Vector4& point1,
-                                      const linalg::Vector4& point2, uint32_t color, Screen& screen,
-                                      const linalg::Vector3& normal,
-                                      const std::vector<Light>& lights) {
-                this->RenderTriangleWireframe(point0, point1, point2, color, screen, normal,
-                                              lights);
+            render_triangle_ = [this](const RenderContext& context) {
+                this->RenderTriangleWireframe(context);
             };
             break;
         default:
@@ -63,7 +56,9 @@ void Renderer::RenderTriangle(const Object& obj, const primitive::Triangle& tria
 
     linalg::Vector3 normal = CalculateNormal(global_a, global_b, global_c);
 
-    render_triangle_(point0, point1, point2, triangle.color, screen, normal, world.GetLights());
+    RenderContext context{point0, point1, point2,           triangle.color,
+                          screen, normal, world.GetLights()};
+    render_triangle_(context);
 }
 
 linalg::Vector4 Renderer::ProjectVertex(const linalg::Vector3& point, const Camera& camera,

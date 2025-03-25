@@ -8,6 +8,16 @@
 #include <functional>
 
 namespace renderer {
+struct RenderContext {
+    const linalg::Vector4& point0;
+    const linalg::Vector4& point1;
+    const linalg::Vector4& point2;
+    uint32_t color;
+    Screen& screen;
+    const linalg::Vector3& normal;
+    const std::vector<Light>& lights;
+};
+
 class Renderer {
 public:
     enum class Mode : uint8_t { Filled, Wireframe };
@@ -17,21 +27,13 @@ public:
     void SetMode(Mode mode);
 
 private:
-    using RenderTriangleFunc = std::function<void(
-        const linalg::Vector4& point0, const linalg::Vector4& point1, const linalg::Vector4& point2,
-        uint32_t, Screen&, const linalg::Vector3& normal, const std::vector<Light>&)>;
+    using RenderTriangleFunc = std::function<void(const RenderContext& context)>;
     RenderTriangleFunc render_triangle_;
 
     void RenderTriangle(const Object& obj, const primitive::Triangle& triangle,
                         const Camera& camera, Screen& screen, const World& world) const;
-    void RenderTriangleWireframe(const linalg::Vector4& point0, const linalg::Vector4& point1,
-                                 const linalg::Vector4& point2, uint32_t color, Screen& screen,
-                                 const linalg::Vector3& normal,
-                                 const std::vector<Light>& lights) const;
-    void RenderTriangleFilled(const linalg::Vector4& point0, const linalg::Vector4& point1,
-                              const linalg::Vector4& point2, uint32_t color, Screen& screen,
-                              const linalg::Vector3& normal,
-                              const std::vector<Light>& lights) const;
+    void RenderTriangleWireframe(const RenderContext& context) const;
+    void RenderTriangleFilled(const RenderContext& context) const;
     linalg::Vector4 ProjectVertex(const linalg::Vector3& point, const Camera& camera,
                                   const Screen& screen) const;
     uint32_t CalculateLighting(uint32_t base_color, const linalg::Vector3& normal,

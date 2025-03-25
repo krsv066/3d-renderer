@@ -3,11 +3,8 @@
 #include <cassert>
 
 namespace renderer {
-void Renderer::RenderTriangleWireframe(const linalg::Vector4& point0, const linalg::Vector4& point1,
-                                       const linalg::Vector4& point2, uint32_t color,
-                                       Screen& screen, const linalg::Vector3& normal,
-                                       const std::vector<Light>& lights) const {
-    auto draw_line = [&screen](int x0, int y0, int x1, int y1, uint32_t color) {
+void Renderer::RenderTriangleWireframe(const RenderContext& context) const {
+    auto draw_line = [&context](int x0, int y0, int x1, int y1, uint32_t color) {
         bool steep = false;
         if (std::abs(x0 - x1) < std::abs(y0 - y1)) {
             std::swap(x0, y0);
@@ -30,12 +27,14 @@ void Renderer::RenderTriangleWireframe(const linalg::Vector4& point0, const lina
 
         for (int x = x0; x <= x1; ++x) {
             if (steep) {
-                if (y >= 0 && y < screen.GetWidth() && x >= 0 && x < screen.GetHeight()) {
-                    screen.SetFrameBufferPixel(y, x, color);
+                if (y >= 0 && y < context.screen.GetWidth() && x >= 0 &&
+                    x < context.screen.GetHeight()) {
+                    context.screen.SetFrameBufferPixel(y, x, color);
                 }
             } else {
-                if (x >= 0 && x < screen.GetWidth() && y >= 0 && y < screen.GetHeight()) {
-                    screen.SetFrameBufferPixel(x, y, color);
+                if (x >= 0 && x < context.screen.GetWidth() && y >= 0 &&
+                    y < context.screen.GetHeight()) {
+                    context.screen.SetFrameBufferPixel(x, y, color);
                 }
             }
 
@@ -47,8 +46,11 @@ void Renderer::RenderTriangleWireframe(const linalg::Vector4& point0, const lina
         }
     };
 
-    draw_line(point0.x(), point0.y(), point1.x(), point1.y(), color);
-    draw_line(point1.x(), point1.y(), point2.x(), point2.y(), color);
-    draw_line(point2.x(), point2.y(), point0.x(), point0.y(), color);
+    draw_line(context.point0.x(), context.point0.y(), context.point1.x(), context.point1.y(),
+              context.color);
+    draw_line(context.point1.x(), context.point1.y(), context.point2.x(), context.point2.y(),
+              context.color);
+    draw_line(context.point2.x(), context.point2.y(), context.point0.x(), context.point0.y(),
+              context.color);
 }
 }  // namespace renderer

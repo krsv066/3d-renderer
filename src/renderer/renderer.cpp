@@ -56,7 +56,7 @@ void Renderer::RenderTriangle(const Object& obj, const primitive::Triangle& tria
 
     linalg::Vector3 normal = CalculateNormal(global_a, global_b, global_c);
 
-    RenderContext context{point0, point1, point2,           triangle.color,
+    RenderContext context{point0, point1, point2,           obj.GetColor(),
                           screen, normal, world.GetLights()};
     render_triangle_(context);
 }

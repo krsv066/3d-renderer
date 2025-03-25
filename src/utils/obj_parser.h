@@ -13,8 +13,7 @@ public:
 
 private:
     static std::vector<linalg::Vector3> ParseVertices(const std::string& content);
-    static std::vector<primitive::Triangle> ParseFaces(const std::string& content,
-                                                       const std::vector<linalg::Vector3>& vertices,
-                                                       uint32_t color);
+    static std::vector<primitive::Triangle> ParseFaces(
+        const std::string& content, const std::vector<linalg::Vector3>& vertices);
 };
 }  // namespace renderer::parser

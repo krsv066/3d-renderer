@@ -2,13 +2,13 @@
 
 namespace renderer {
 Object::Object(std::initializer_list<primitive::Triangle> list, const linalg::Vector3 &translation,
-               const linalg::Matrix3 &rotation)
-    : object_(list), translation_(translation), rotation_(rotation) {
+               const linalg::Matrix3 &rotation, uint32_t color)
+    : object_(list), translation_(translation), rotation_(rotation), color_(color) {
 }
 
 Object::Object(const std::vector<primitive::Triangle> &triangles,
-               const linalg::Vector3 &translation, const linalg::Matrix3 &rotation)
-    : object_(triangles), translation_(translation), rotation_(rotation) {
+               const linalg::Vector3 &translation, const linalg::Matrix3 &rotation, uint32_t color)
+    : object_(triangles), translation_(translation), rotation_(rotation), color_(color) {
 }
 
 const std::vector<primitive::Triangle> &Object::GetTriangles() const {
@@ -21,5 +21,9 @@ const linalg::Vector3 &Object::GetTranslation() const {
 
 const linalg::Matrix3 &Object::GetRotation() const {
     return rotation_;
+}
+
+uint32_t Object::GetColor() const {
+    return color_;
 }
 }  // namespace renderer

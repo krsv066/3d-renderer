@@ -20,11 +20,11 @@ renderer::Object Parser::LoadObj(const std::string& filename, uint32_t color,
 
     auto vertices = ParseVertices(content);
     assert(!vertices.empty());
-    auto triangles = ParseFaces(content, vertices, color);
+    auto triangles = ParseFaces(content, vertices);
     assert(!triangles.empty());
-    renderer::Object obj{triangles, translation, rotation};
+    renderer::Object obj{triangles, translation, rotation, color};
 
-    return renderer::Object{triangles, translation, rotation};
+    return obj;
 }
 
 std::vector<linalg::Vector3> Parser::ParseVertices(const std::string& content) {
@@ -47,8 +47,7 @@ std::vector<linalg::Vector3> Parser::ParseVertices(const std::string& content) {
 }
 
 std::vector<primitive::Triangle> Parser::ParseFaces(const std::string& content,
-                                                    const std::vector<linalg::Vector3>& vertices,
-                                                    uint32_t color) {
+                                                    const std::vector<linalg::Vector3>& vertices) {
     assert(!vertices.empty());
     std::vector<primitive::Triangle> triangles;
     std::stringstream ss(content);
@@ -71,7 +70,7 @@ std::vector<primitive::Triangle> Parser::ParseFaces(const std::string& content,
         assert(indices.size() >= 3);
         for (size_t i = 1; i < indices.size() - 1; ++i) {
             triangles.push_back(
-                {vertices[indices[0]], vertices[indices[i]], vertices[indices[i + 1]], color});
+                {vertices[indices[0]], vertices[indices[i]], vertices[indices[i + 1]]});
         }
     }
 

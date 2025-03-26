@@ -1,6 +1,5 @@
 #include "renderer.h"
 #include <cmath>
-#include <cassert>
 
 namespace renderer {
 void Renderer::RenderTriangleWireframe(const RenderContext& ctx) const {
@@ -18,8 +17,6 @@ void Renderer::RenderTriangleWireframe(const RenderContext& ctx) const {
         }
 
         int dx = x1 - x0;
-        assert(dx >= 0);
-
         int dy = y1 - y0;
         int derror2 = std::abs(dy) * 2;
         int error2 = 0;

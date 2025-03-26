@@ -1,15 +1,12 @@
 #pragma once
 
 #include "color.h"
-#include "primitive.h"
+#include "triangle.h"
 #include <vector>
 
 namespace renderer {
 class Object {
 public:
-    Object(std::initializer_list<primitive::Triangle> list,
-           const linalg::Vector3 &translation = linalg::kZeroVector3,
-           const linalg::Matrix3 &rotation = linalg::kIdentityMatrix3, Color color = kWhiteColor);
     Object(const std::vector<primitive::Triangle> &triangles,
            const linalg::Vector3 &translation = linalg::kZeroVector3,
            const linalg::Matrix3 &rotation = linalg::kIdentityMatrix3, Color color = kWhiteColor);
@@ -17,6 +14,7 @@ public:
     const linalg::Vector3 &GetTranslation() const;
     const linalg::Matrix3 &GetRotation() const;
     Color GetColor() const;
+
     template <typename... Triangles>
     void Add(Triangles &&...triangles) {
         (object_.push_back(std::forward<Triangles>(triangles)), ...);

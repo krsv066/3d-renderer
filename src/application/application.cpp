@@ -14,7 +14,7 @@ static constexpr double kRotationScale = 1.0;
 
 Application::Application()
     : renderer_(Renderer::Mode::Filled),
-      world_{parser::Parser::LoadObj("../build/cow.obj")},
+      world_({parser::Parser::LoadObj("../build/cow.obj")}),
       camera_(kDefaultWidth, kDefaultHeight) {
 
     world_.AddLight(Light::Directional(linalg::Vector3(-1.0, -1.0, -1.0),

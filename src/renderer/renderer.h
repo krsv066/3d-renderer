@@ -26,13 +26,13 @@ public:
     void SetMode(Mode mode);
 
 private:
-    using RenderTriangleFunc = std::function<void(const RenderContext& context)>;
+    using RenderTriangleFunc = std::function<void(const RenderContext& ctx)>;
     RenderTriangleFunc render_triangle_;
 
     void RenderTriangle(const Object& obj, const primitive::Triangle& triangle,
                         const Camera& camera, Screen& screen, const World& world) const;
-    void RenderTriangleWireframe(const RenderContext& context) const;
-    void RenderTriangleFilled(const RenderContext& context) const;
+    void RenderTriangleWireframe(const RenderContext& ctx) const;
+    void RenderTriangleFilled(const RenderContext& ctx) const;
     linalg::Vector4 ProjectVertex(const linalg::Vector3& point, const Camera& camera,
                                   const Screen& screen) const;
     Color CalculateLighting(Color base_color, const linalg::Vector3& normal,
@@ -48,8 +48,8 @@ private:
         return (b - a).cross(c - a).normalized();
     }
 
-    inline double EdgeFunction(double x0, double y0, double x1, double y1, double x,
-                               double y) const {
+    inline double CalculateEdgeValue(double x0, double y0, double x1, double y1, double x,
+                                     double y) const {
         return (y - y0) * (x1 - x0) - (x - x0) * (y1 - y0);
     }
 };

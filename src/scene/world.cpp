@@ -1,7 +1,7 @@
 #include "world.h"
 
 namespace renderer {
-World::World(std::initializer_list<Object> list) : objects_(list) {
+World::World(std::vector<Object> list) : objects_(list) {
     lights_.push_back(Light::Ambient(kDefaultAmbient, 1.0));
 }
 

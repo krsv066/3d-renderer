@@ -3,8 +3,8 @@
 #include <cassert>
 
 namespace renderer {
-void Renderer::RenderTriangleWireframe(const RenderContext& context) const {
-    auto draw_line = [&context](int x0, int y0, int x1, int y1, Color color) {
+void Renderer::RenderTriangleWireframe(const RenderContext& ctx) const {
+    auto draw_line = [&ctx](int x0, int y0, int x1, int y1, Color color) {
         bool steep = false;
         if (std::abs(x0 - x1) < std::abs(y0 - y1)) {
             std::swap(x0, y0);
@@ -27,14 +27,12 @@ void Renderer::RenderTriangleWireframe(const RenderContext& context) const {
 
         for (int x = x0; x <= x1; ++x) {
             if (steep) {
-                if (y >= 0 && y < context.screen.GetWidth() && x >= 0 &&
-                    x < context.screen.GetHeight()) {
-                    context.screen.SetFrameBufferPixel(y, x, color.GetHex());
+                if (y >= 0 && y < ctx.screen.GetWidth() && x >= 0 && x < ctx.screen.GetHeight()) {
+                    ctx.screen.SetFrameBufferPixel(y, x, color.GetHex());
                 }
             } else {
-                if (x >= 0 && x < context.screen.GetWidth() && y >= 0 &&
-                    y < context.screen.GetHeight()) {
-                    context.screen.SetFrameBufferPixel(x, y, color.GetHex());
+                if (x >= 0 && x < ctx.screen.GetWidth() && y >= 0 && y < ctx.screen.GetHeight()) {
+                    ctx.screen.SetFrameBufferPixel(x, y, color.GetHex());
                 }
             }
 
@@ -46,11 +44,8 @@ void Renderer::RenderTriangleWireframe(const RenderContext& context) const {
         }
     };
 
-    draw_line(context.point0.x(), context.point0.y(), context.point1.x(), context.point1.y(),
-              context.color);
-    draw_line(context.point1.x(), context.point1.y(), context.point2.x(), context.point2.y(),
-              context.color);
-    draw_line(context.point2.x(), context.point2.y(), context.point0.x(), context.point0.y(),
-              context.color);
+    draw_line(ctx.point0.x(), ctx.point0.y(), ctx.point1.x(), ctx.point1.y(), ctx.color);
+    draw_line(ctx.point1.x(), ctx.point1.y(), ctx.point2.x(), ctx.point2.y(), ctx.color);
+    draw_line(ctx.point2.x(), ctx.point2.y(), ctx.point0.x(), ctx.point0.y(), ctx.color);
 }
 }  // namespace renderer

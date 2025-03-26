@@ -10,13 +10,13 @@ Renderer::Renderer(Mode render_mode) {
 void Renderer::SetMode(Mode render_mode) {
     switch (render_mode) {
         case Mode::Wireframe:
-            render_triangle_ = [this](const RenderContext& context) {
-                this->RenderTriangleWireframe(context);
+            render_triangle_ = [this](const RenderContext& ctx) {
+                this->RenderTriangleWireframe(ctx);
             };
             break;
         case Mode::Filled:
-            render_triangle_ = [this](const RenderContext& context) {
-                this->RenderTriangleFilled(context);
+            render_triangle_ = [this](const RenderContext& ctx) {
+                this->RenderTriangleFilled(ctx);
             };
             break;
         default:
@@ -40,8 +40,6 @@ Screen Renderer::Render(const World& world, const Camera& camera, Screen&& scree
 
 void Renderer::RenderTriangle(const Object& obj, const primitive::Triangle& triangle,
                               const Camera& camera, Screen& screen, const World& world) const {
-    assert(render_triangle_ != nullptr);
-
     const linalg::Vector3 global_a = GetGlobalCoordinates(obj, triangle.a);
     const linalg::Vector3 global_b = GetGlobalCoordinates(obj, triangle.b);
     const linalg::Vector3 global_c = GetGlobalCoordinates(obj, triangle.c);

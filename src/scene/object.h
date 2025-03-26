@@ -15,11 +15,6 @@ public:
     const linalg::Matrix3 &GetRotation() const;
     Color GetColor() const;
 
-    template <typename... Triangles>
-    void Add(Triangles &&...triangles) {
-        (object_.push_back(std::forward<Triangles>(triangles)), ...);
-    }
-
 private:
     std::vector<primitive::Triangle> object_;
     linalg::Vector3 translation_;

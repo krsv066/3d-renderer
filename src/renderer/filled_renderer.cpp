@@ -2,22 +2,30 @@
 #include "renderer.h"
 #include <algorithm>
 #include <cassert>
-#include <cmath>
 
 namespace renderer {
 void Renderer::RenderTriangleFilled(const RenderContext& ctx) const {
-    const int min_x = std::max(0, static_cast<int>(std::floor(std::min({ctx.point0.x(), ctx.point1.x(), ctx.point2.x()}))));
-    const int max_x = std::min(static_cast<int>(ctx.screen.GetWidth()) - 1, static_cast<int>(std::ceil(std::max({ctx.point0.x(), ctx.point1.x(), ctx.point2.x()}))));
-    const int min_y = std::max(0, static_cast<int>(std::floor(std::min({ctx.point0.y(), ctx.point1.y(), ctx.point2.y()}))));
-    const int max_y = std::min(static_cast<int>(ctx.screen.GetHeight()) - 1, static_cast<int>(std::ceil(std::max({ctx.point0.y(), ctx.point1.y(), ctx.point2.y()}))));
+    const double min_x_coord = std::min({ctx.point0.x(), ctx.point1.x(), ctx.point2.x()});
+    const double max_x_coord = std::max({ctx.point0.x(), ctx.point1.x(), ctx.point2.x()});
+    const double min_y_coord = std::min({ctx.point0.y(), ctx.point1.y(), ctx.point2.y()});
+    const double max_y_coord = std::max({ctx.point0.y(), ctx.point1.y(), ctx.point2.y()});
 
-    const double area = CalculateEdgeValue(ctx.point0.x(), ctx.point0.y(), ctx.point1.x(), ctx.point1.y(), ctx.point2.x(), ctx.point2.y());
+    const int min_x = GetMinScreenX(min_x_coord);
+    const int max_x = GetMaxScreenX(max_x_coord, ctx.screen);
+    const int min_y = GetMinScreenY(min_y_coord);
+    const int max_y = GetMaxScreenY(max_y_coord, ctx.screen);
+
+    const double area = CalculateEdgeValue(ctx.point0.x(), ctx.point0.y(), ctx.point1.x(),
+                                           ctx.point1.y(), ctx.point2.x(), ctx.point2.y());
 
     for (int y = min_y; y <= max_y; ++y) {
         for (int x = min_x; x <= max_x; ++x) {
-            double w0 = CalculateEdgeValue(ctx.point1.x(), ctx.point1.y(), ctx.point2.x(), ctx.point2.y(), x, y);
-            double w1 = CalculateEdgeValue(ctx.point2.x(), ctx.point2.y(), ctx.point0.x(), ctx.point0.y(), x, y);
-            double w2 = CalculateEdgeValue(ctx.point0.x(), ctx.point0.y(), ctx.point1.x(), ctx.point1.y(), x, y);
+            double w0 = CalculateEdgeValue(ctx.point1.x(), ctx.point1.y(), ctx.point2.x(),
+                                           ctx.point2.y(), x, y);
+            double w1 = CalculateEdgeValue(ctx.point2.x(), ctx.point2.y(), ctx.point0.x(),
+                                           ctx.point0.y(), x, y);
+            double w2 = CalculateEdgeValue(ctx.point0.x(), ctx.point0.y(), ctx.point1.x(),
+                                           ctx.point1.y(), x, y);
 
             if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
                 w0 /= area;

@@ -1,9 +1,9 @@
 #include "object.h"
 
 namespace renderer {
-Object::Object(const std::vector<primitive::Triangle> &triangles,
-               const linalg::Vector3 &translation, const linalg::Matrix3 &rotation, Color color)
-    : object_(triangles), translation_(translation), rotation_(rotation), color_(color) {
+Object::Object(std::vector<primitive::Triangle> &&triangles, const linalg::Vector3 &translation,
+               const linalg::Matrix3 &rotation, Color color)
+    : object_(std::move(triangles)), translation_(translation), rotation_(rotation), color_(color) {
 }
 
 const std::vector<primitive::Triangle> &Object::GetTriangles() const {

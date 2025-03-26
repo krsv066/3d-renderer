@@ -22,7 +22,7 @@ renderer::Object Parser::LoadObj(const std::string& filename, Color color,
     assert(!vertices.empty());
     auto triangles = ParseFaces(content, vertices);
     assert(!triangles.empty());
-    renderer::Object obj{triangles, translation, rotation, color};
+    renderer::Object obj(std::move(triangles), translation, rotation, color);
 
     return obj;
 }

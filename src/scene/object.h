@@ -7,7 +7,7 @@
 namespace renderer {
 class Object {
 public:
-    Object(const std::vector<primitive::Triangle> &triangles,
+    Object(std::vector<primitive::Triangle> &&triangles,
            const linalg::Vector3 &translation = linalg::kZeroVector3,
            const linalg::Matrix3 &rotation = linalg::kIdentityMatrix3, Color color = kWhiteColor);
     const std::vector<primitive::Triangle> &GetTriangles() const;

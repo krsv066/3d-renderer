@@ -68,8 +68,10 @@ std::vector<Triangle> Parser::ParseFaces(const std::string& content,
 
         assert(indices.size() >= 3);
         for (size_t i = 1; i < indices.size() - 1; ++i) {
-            triangles.push_back(
-                {vertices[indices[0]], vertices[indices[i]], vertices[indices[i + 1]]});
+            Vector3 a = vertices[indices[0]];
+            Vector3 b = vertices[indices[i]];
+            Vector3 c = vertices[indices[i + 1]];
+            triangles.emplace_back(a, b, c, (b - a).cross(c - a).normalized());
         }
     }
 

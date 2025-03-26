@@ -2,8 +2,9 @@
 #include <cmath>
 
 namespace renderer {
-void Renderer::RenderTriangleWireframe(const RenderContext& ctx) const {
-    auto draw_line = [&ctx](int x0, int y0, int x1, int y1, Color color) {
+void Renderer::RenderTriangleWireframe(const TriangleProjected& triangle_pr,
+                                       const std::vector<Light>&, Screen& screen) const {
+    auto draw_line = [&](int x0, int y0, int x1, int y1, Color color) {
         bool steep = false;
         if (std::abs(x0 - x1) < std::abs(y0 - y1)) {
             std::swap(x0, y0);
@@ -24,12 +25,12 @@ void Renderer::RenderTriangleWireframe(const RenderContext& ctx) const {
 
         for (int x = x0; x <= x1; ++x) {
             if (steep) {
-                if (y >= 0 && y < ctx.screen.GetWidth() && x >= 0 && x < ctx.screen.GetHeight()) {
-                    ctx.screen.SetFrameBufferPixel(y, x, color.GetHex());
+                if (y >= 0 && y < screen.GetWidth() && x >= 0 && x < screen.GetHeight()) {
+                    screen.SetFrameBufferPixel(y, x, color.GetHex());
                 }
             } else {
-                if (x >= 0 && x < ctx.screen.GetWidth() && y >= 0 && y < ctx.screen.GetHeight()) {
-                    ctx.screen.SetFrameBufferPixel(x, y, color.GetHex());
+                if (x >= 0 && x < screen.GetWidth() && y >= 0 && y < screen.GetHeight()) {
+                    screen.SetFrameBufferPixel(x, y, color.GetHex());
                 }
             }
 
@@ -41,8 +42,11 @@ void Renderer::RenderTriangleWireframe(const RenderContext& ctx) const {
         }
     };
 
-    draw_line(ctx.point0.x(), ctx.point0.y(), ctx.point1.x(), ctx.point1.y(), ctx.color);
-    draw_line(ctx.point1.x(), ctx.point1.y(), ctx.point2.x(), ctx.point2.y(), ctx.color);
-    draw_line(ctx.point2.x(), ctx.point2.y(), ctx.point0.x(), ctx.point0.y(), ctx.color);
+    draw_line(triangle_pr.a.x(), triangle_pr.a.y(), triangle_pr.b.x(), triangle_pr.b.y(),
+              triangle_pr.color);
+    draw_line(triangle_pr.b.x(), triangle_pr.b.y(), triangle_pr.c.x(), triangle_pr.c.y(),
+              triangle_pr.color);
+    draw_line(triangle_pr.c.x(), triangle_pr.c.y(), triangle_pr.a.x(), triangle_pr.a.y(),
+              triangle_pr.color);
 }
 }  // namespace renderer

@@ -9,16 +9,6 @@
 #include <functional>
 
 namespace renderer {
-struct RenderContext {
-    const Vector4& point0;
-    const Vector4& point1;
-    const Vector4& point2;
-    Color color;
-    Screen& screen;
-    const Vector3& normal;
-    const std::vector<Light>& lights;
-};
-
 class Renderer {
 public:
     enum class Mode : uint8_t { Wireframe, Filled };
@@ -27,13 +17,16 @@ public:
     void SetMode(Mode mode);
 
 private:
-    using RenderTriangleFunc = std::function<void(const RenderContext& ctx)>;
+    using RenderTriangleFunc = std::function<void(
+        const TriangleProjected& triangle_proj, const std::vector<Light>& lights, Screen& screen)>;
     RenderTriangleFunc render_triangle_;
 
     void RenderTriangle(const Object& obj, const Triangle& triangle, const Camera& camera,
                         Screen& screen, const World& world) const;
-    void RenderTriangleWireframe(const RenderContext& ctx) const;
-    void RenderTriangleFilled(const RenderContext& ctx) const;
+    void RenderTriangleWireframe(const TriangleProjected& triangle_pr, const std::vector<Light>&,
+                                 Screen& screen) const;
+    void RenderTriangleFilled(const TriangleProjected& triangle_pr,
+                              const std::vector<Light>& lights, Screen& screen) const;
     Vector4 ProjectVertex(const Vector3& point, const Camera& camera, const Screen& screen) const;
     Color CalculateLighting(Color base_color, const Vector3& normal,
                             const std::vector<Light>& lights) const;

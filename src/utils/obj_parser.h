@@ -15,6 +15,6 @@ public:
 private:
     static std::vector<Vector3> ParseVertices(const std::string& content);
     static std::vector<Triangle> ParseFaces(const std::string& content,
-                                            const std::vector<Vector3>& vertices);
+                                            const std::vector<Vector3>& vertices, Color color);
 };
 }  // namespace renderer

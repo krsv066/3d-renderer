@@ -4,38 +4,41 @@
 #include <cassert>
 
 namespace renderer {
-void Renderer::RenderTriangleFilled(const RenderContext& ctx) const {
-    const double min_x_coord = std::min({ctx.point0.x(), ctx.point1.x(), ctx.point2.x()});
-    const double max_x_coord = std::max({ctx.point0.x(), ctx.point1.x(), ctx.point2.x()});
-    const double min_y_coord = std::min({ctx.point0.y(), ctx.point1.y(), ctx.point2.y()});
-    const double max_y_coord = std::max({ctx.point0.y(), ctx.point1.y(), ctx.point2.y()});
+void Renderer::RenderTriangleFilled(const TriangleProjected& triangle_pr,
+                                    const std::vector<Light>& lights, Screen& screen) const {
+    const double min_x_coord = std::min({triangle_pr.a.x(), triangle_pr.b.x(), triangle_pr.c.x()});
+    const double max_x_coord = std::max({triangle_pr.a.x(), triangle_pr.b.x(), triangle_pr.c.x()});
+    const double min_y_coord = std::min({triangle_pr.a.y(), triangle_pr.b.y(), triangle_pr.c.y()});
+    const double max_y_coord = std::max({triangle_pr.a.y(), triangle_pr.b.y(), triangle_pr.c.y()});
 
     const int min_x = GetMinScreenX(min_x_coord);
-    const int max_x = GetMaxScreenX(max_x_coord, ctx.screen);
+    const int max_x = GetMaxScreenX(max_x_coord, screen);
     const int min_y = GetMinScreenY(min_y_coord);
-    const int max_y = GetMaxScreenY(max_y_coord, ctx.screen);
+    const int max_y = GetMaxScreenY(max_y_coord, screen);
 
-    const double area = CalculateEdgeValue(ctx.point0.x(), ctx.point0.y(), ctx.point1.x(),
-                                           ctx.point1.y(), ctx.point2.x(), ctx.point2.y());
+    const double area = CalculateEdgeValue(triangle_pr.a.x(), triangle_pr.a.y(), triangle_pr.b.x(),
+                                           triangle_pr.b.y(), triangle_pr.c.x(), triangle_pr.c.y());
 
     for (int y = min_y; y <= max_y; ++y) {
         for (int x = min_x; x <= max_x; ++x) {
-            double w0 = CalculateEdgeValue(ctx.point1.x(), ctx.point1.y(), ctx.point2.x(),
-                                           ctx.point2.y(), x, y);
-            double w1 = CalculateEdgeValue(ctx.point2.x(), ctx.point2.y(), ctx.point0.x(),
-                                           ctx.point0.y(), x, y);
-            double w2 = CalculateEdgeValue(ctx.point0.x(), ctx.point0.y(), ctx.point1.x(),
-                                           ctx.point1.y(), x, y);
+            double w0 = CalculateEdgeValue(triangle_pr.b.x(), triangle_pr.b.y(), triangle_pr.c.x(),
+                                           triangle_pr.c.y(), x, y);
+            double w1 = CalculateEdgeValue(triangle_pr.c.x(), triangle_pr.c.y(), triangle_pr.a.x(),
+                                           triangle_pr.a.y(), x, y);
+            double w2 = CalculateEdgeValue(triangle_pr.a.x(), triangle_pr.a.y(), triangle_pr.b.x(),
+                                           triangle_pr.b.y(), x, y);
 
             if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
                 w0 /= area;
                 w1 /= area;
                 w2 /= area;
-                const double z = w0 * ctx.point0.z() + w1 * ctx.point1.z() + w2 * ctx.point2.z();
-                if (z < ctx.screen.GetZBufferDepth(x, y)) {
-                    ctx.screen.SetZBufferDepth(x, y, z);
-                    Color lit_color = CalculateLighting(ctx.color, ctx.normal, ctx.lights);
-                    ctx.screen.SetFrameBufferPixel(x, y, lit_color.GetHex());
+                const double z =
+                    w0 * triangle_pr.a.z() + w1 * triangle_pr.b.z() + w2 * triangle_pr.c.z();
+                if (z < screen.GetZBufferDepth(x, y)) {
+                    screen.SetZBufferDepth(x, y, z);
+                    Color lit_color =
+                        CalculateLighting(triangle_pr.color, triangle_pr.normal, lights);
+                    screen.SetFrameBufferPixel(x, y, lit_color.GetHex());
                 }
             }
         }

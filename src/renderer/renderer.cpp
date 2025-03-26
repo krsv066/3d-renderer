@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "linalg.h"
 #include "object.h"
 #include <cassert>
 
@@ -10,10 +11,16 @@ Renderer::Renderer(Mode render_mode) {
 void Renderer::SetMode(Mode render_mode) {
     switch (render_mode) {
         case Mode::Wireframe:
-            render_triangle_ = [this](const RenderContext& ctx) { RenderTriangleWireframe(ctx); };
+            render_triangle_ = [this](const TriangleProjected& triangle_pr,
+                                      const std::vector<Light>& lights, Screen& screen) {
+                RenderTriangleWireframe(triangle_pr, lights, screen);
+            };
             break;
         case Mode::Filled:
-            render_triangle_ = [this](const RenderContext& ctx) { RenderTriangleFilled(ctx); };
+            render_triangle_ = [this](const TriangleProjected& triangle_pr,
+                                      const std::vector<Light>& lights, Screen& screen) {
+                RenderTriangleFilled(triangle_pr, lights, screen);
+            };
             break;
         default:
             assert(false);
@@ -24,7 +31,7 @@ void Renderer::SetMode(Mode render_mode) {
 Screen Renderer::Render(const World& world, const Camera& camera, Screen&& screen) const {
     assert(screen.GetWidth() > 0 && screen.GetHeight() > 0);
 
-    screen.Clear();
+    screen.FillBlackColor();
     for (const auto& obj : world.GetObjects()) {
         for (const auto& triangle : obj.GetTriangles()) {
             RenderTriangle(obj, triangle, camera, screen, world);
@@ -48,11 +55,11 @@ void Renderer::RenderTriangle(const Object& obj, const Triangle& triangle, const
         return;
     }
 
-    Vector3 normal = CalculateNormal(global_a, global_b, global_c);
+    TriangleProjected triangle_pr = {point0, point1, point2,
+                                     (global_b - global_a).cross(global_c - global_a).normalized(),
+                                     triangle.color};
 
-    RenderContext context{point0, point1, point2,           obj.GetColor(),
-                          screen, normal, world.GetLights()};
-    render_triangle_(context);
+    render_triangle_(triangle_pr, world.GetLights(), screen);
 }
 
 Vector4 Renderer::ProjectVertex(const Vector3& point, const Camera& camera,

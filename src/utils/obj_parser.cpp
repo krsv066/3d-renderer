@@ -19,9 +19,9 @@ renderer::Object Parser::LoadObj(const std::string& filename, Color color,
 
     auto vertices = ParseVertices(content);
     assert(!vertices.empty());
-    auto triangles = ParseFaces(content, vertices);
+    auto triangles = ParseFaces(content, vertices, color);
     assert(!triangles.empty());
-    renderer::Object obj(std::move(triangles), translation, rotation, color);
+    renderer::Object obj(std::move(triangles), translation, rotation);
 
     return obj;
 }
@@ -46,7 +46,7 @@ std::vector<Vector3> Parser::ParseVertices(const std::string& content) {
 }
 
 std::vector<Triangle> Parser::ParseFaces(const std::string& content,
-                                         const std::vector<Vector3>& vertices) {
+                                         const std::vector<Vector3>& vertices, Color color) {
     assert(!vertices.empty());
     std::vector<Triangle> triangles;
     std::stringstream ss(content);
@@ -71,7 +71,7 @@ std::vector<Triangle> Parser::ParseFaces(const std::string& content,
             Vector3 a = vertices[indices[0]];
             Vector3 b = vertices[indices[i]];
             Vector3 c = vertices[indices[i + 1]];
-            triangles.emplace_back(a, b, c, (b - a).cross(c - a).normalized());
+            triangles.emplace_back(a, b, c, (b - a).cross(c - a).normalized(), color);
         }
     }
 

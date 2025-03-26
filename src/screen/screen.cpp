@@ -63,7 +63,7 @@ void Screen::SetFrameBufferPixel(int x, int y, uint32_t color) {
     frame_buffer_[index + 3] = 0xFF;
 }
 
-void Screen::Clear() {
+void Screen::FillBlackColor() {
     std::fill(frame_buffer_.begin(), frame_buffer_.end(), 0);
     std::fill(z_buffer_.begin(), z_buffer_.end(), std::numeric_limits<double>::infinity());
 }

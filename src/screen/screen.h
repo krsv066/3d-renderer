@@ -18,7 +18,7 @@ public:
     Height GetHeight() const;
     void SetZBufferDepth(int x, int y, double z);
     void SetFrameBufferPixel(int x, int y, uint32_t color);
-    void Clear();
+    void FillBlackColor();
 
 private:
     Width width_;

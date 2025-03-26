@@ -38,31 +38,31 @@ Screen Renderer::Render(const World& world, const Camera& camera, Screen&& scree
     return std::move(screen);
 }
 
-void Renderer::RenderTriangle(const Object& obj, const primitive::Triangle& triangle,
-                              const Camera& camera, Screen& screen, const World& world) const {
-    const linalg::Vector3 global_a = GetGlobalCoordinates(obj, triangle.a);
-    const linalg::Vector3 global_b = GetGlobalCoordinates(obj, triangle.b);
-    const linalg::Vector3 global_c = GetGlobalCoordinates(obj, triangle.c);
+void Renderer::RenderTriangle(const Object& obj, const Triangle& triangle, const Camera& camera,
+                              Screen& screen, const World& world) const {
+    const Vector3 global_a = GetGlobalCoordinates(obj, triangle.a);
+    const Vector3 global_b = GetGlobalCoordinates(obj, triangle.b);
+    const Vector3 global_c = GetGlobalCoordinates(obj, triangle.c);
 
-    const linalg::Vector4 point0 = ProjectVertex(global_a, camera, screen);
-    const linalg::Vector4 point1 = ProjectVertex(global_b, camera, screen);
-    const linalg::Vector4 point2 = ProjectVertex(global_c, camera, screen);
+    const Vector4 point0 = ProjectVertex(global_a, camera, screen);
+    const Vector4 point1 = ProjectVertex(global_b, camera, screen);
+    const Vector4 point2 = ProjectVertex(global_c, camera, screen);
 
     if (point0.z() < 0.1 && point1.z() < 0.1 && point2.z() < 0.1) {
         return;
     }
 
-    linalg::Vector3 normal = CalculateNormal(global_a, global_b, global_c);
+    Vector3 normal = CalculateNormal(global_a, global_b, global_c);
 
     RenderContext context{point0, point1, point2,           obj.GetColor(),
                           screen, normal, world.GetLights()};
     render_triangle_(context);
 }
 
-linalg::Vector4 Renderer::ProjectVertex(const linalg::Vector3& point, const Camera& camera,
-                                        const Screen& screen) const {
-    linalg::Vector4 pos(point.x(), point.y(), point.z(), 1.0);
-    linalg::Vector4 projected = camera.GetViewProjectionMatrix() * pos;
+Vector4 Renderer::ProjectVertex(const Vector3& point, const Camera& camera,
+                                const Screen& screen) const {
+    Vector4 pos(point.x(), point.y(), point.z(), 1.0);
+    Vector4 projected = camera.GetViewProjectionMatrix() * pos;
 
     double clip_z = projected.z();
     if (projected.w() != 0) {

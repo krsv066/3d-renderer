@@ -4,10 +4,9 @@
 #include <stdexcept>
 #include <cassert>
 
-namespace renderer::parser {
+namespace renderer {
 renderer::Object Parser::LoadObj(const std::string& filename, Color color,
-                                 const linalg::Vector3& translation,
-                                 const linalg::Matrix3& rotation) {
+                                 const Vector3& translation, const Matrix3& rotation) {
     assert(!filename.empty());
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -27,8 +26,8 @@ renderer::Object Parser::LoadObj(const std::string& filename, Color color,
     return obj;
 }
 
-std::vector<linalg::Vector3> Parser::ParseVertices(const std::string& content) {
-    std::vector<linalg::Vector3> vertices;
+std::vector<Vector3> Parser::ParseVertices(const std::string& content) {
+    std::vector<Vector3> vertices;
     std::stringstream ss(content);
     std::string line;
 
@@ -46,10 +45,10 @@ std::vector<linalg::Vector3> Parser::ParseVertices(const std::string& content) {
     return vertices;
 }
 
-std::vector<primitive::Triangle> Parser::ParseFaces(const std::string& content,
-                                                    const std::vector<linalg::Vector3>& vertices) {
+std::vector<Triangle> Parser::ParseFaces(const std::string& content,
+                                         const std::vector<Vector3>& vertices) {
     assert(!vertices.empty());
-    std::vector<primitive::Triangle> triangles;
+    std::vector<Triangle> triangles;
     std::stringstream ss(content);
     std::string line;
 
@@ -76,4 +75,4 @@ std::vector<primitive::Triangle> Parser::ParseFaces(const std::string& content,
 
     return triangles;
 }
-}  // namespace renderer::parser
+}  // namespace renderer

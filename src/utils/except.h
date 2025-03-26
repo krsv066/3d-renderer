@@ -1,5 +1,5 @@
 #pragma once
 
-namespace renderer::except {
+namespace renderer {
 void React();
 }

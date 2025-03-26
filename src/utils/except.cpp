@@ -2,7 +2,7 @@
 #include <exception>
 #include <iostream>
 
-namespace renderer::except {
+namespace renderer {
 void React() {
     try {
         throw;
@@ -12,4 +12,4 @@ void React() {
         std::cerr << "Caught unknown exception" << std::endl;
     }
 }
-}  // namespace renderer::except
+}  // namespace renderer

@@ -10,12 +10,12 @@
 
 namespace renderer {
 struct RenderContext {
-    const linalg::Vector4& point0;
-    const linalg::Vector4& point1;
-    const linalg::Vector4& point2;
+    const Vector4& point0;
+    const Vector4& point1;
+    const Vector4& point2;
     Color color;
     Screen& screen;
-    const linalg::Vector3& normal;
+    const Vector3& normal;
     const std::vector<Light>& lights;
 };
 
@@ -30,22 +30,19 @@ private:
     using RenderTriangleFunc = std::function<void(const RenderContext& ctx)>;
     RenderTriangleFunc render_triangle_;
 
-    void RenderTriangle(const Object& obj, const primitive::Triangle& triangle,
-                        const Camera& camera, Screen& screen, const World& world) const;
+    void RenderTriangle(const Object& obj, const Triangle& triangle, const Camera& camera,
+                        Screen& screen, const World& world) const;
     void RenderTriangleWireframe(const RenderContext& ctx) const;
     void RenderTriangleFilled(const RenderContext& ctx) const;
-    linalg::Vector4 ProjectVertex(const linalg::Vector3& point, const Camera& camera,
-                                  const Screen& screen) const;
-    Color CalculateLighting(Color base_color, const linalg::Vector3& normal,
+    Vector4 ProjectVertex(const Vector3& point, const Camera& camera, const Screen& screen) const;
+    Color CalculateLighting(Color base_color, const Vector3& normal,
                             const std::vector<Light>& lights) const;
 
-    inline linalg::Vector3 GetGlobalCoordinates(const Object& obj,
-                                                const linalg::Vector3& point) const {
+    inline Vector3 GetGlobalCoordinates(const Object& obj, const Vector3& point) const {
         return obj.GetRotation() * point + obj.GetTranslation();
     }
 
-    inline linalg::Vector3 CalculateNormal(const linalg::Vector3& a, const linalg::Vector3& b,
-                                           const linalg::Vector3& c) const {
+    inline Vector3 CalculateNormal(const Vector3& a, const Vector3& b, const Vector3& c) const {
         return (b - a).cross(c - a).normalized();
     }
 

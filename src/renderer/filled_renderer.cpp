@@ -42,7 +42,7 @@ void Renderer::RenderTriangleFilled(const RenderContext& ctx) const {
     }
 }
 
-Color Renderer::CalculateLighting(Color base_color, const linalg::Vector3& normal,
+Color Renderer::CalculateLighting(Color base_color, const Vector3& normal,
                                   const std::vector<Light>& lights) const {
     Color final_color = kBlackColor;
 

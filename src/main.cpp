@@ -6,7 +6,7 @@ int main() {
         renderer::Application app;
         app.Run();
     } catch (...) {
-        renderer::except::React();
+        renderer::React();
     }
 
     return 0;

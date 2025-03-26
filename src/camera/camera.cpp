@@ -12,7 +12,7 @@ Camera::Camera(Width width, Height height, Fov fov, Near near, Far far)
     assert(near_.value < far.value);
 
     const double tan_half_fov = std::tan(fov.value / 2.0);
-    projection_matrix_ = linalg::kZeroMatrix4;
+    projection_matrix_ = kZeroMatrix4;
     projection_matrix_(0, 0) = 1.0 / (aspect_.value * tan_half_fov);
     projection_matrix_(1, 1) = 1.0 / tan_half_fov;
     projection_matrix_(2, 2) = -(far_.value + near_.value) / (far_.value - near_.value);
@@ -24,12 +24,12 @@ Camera::Camera(Width width, Height height, Fov fov, Near near, Far far)
 }
 
 void Camera::UpdateViewMatrix() {
-    linalg::Vector3 target = position_ + front_;
-    linalg::Vector3 f = (target - position_).normalized();
-    linalg::Vector3 r = f.cross(up_).normalized();
-    linalg::Vector3 u = r.cross(f);
+    Vector3 target = position_ + front_;
+    Vector3 f = (target - position_).normalized();
+    Vector3 r = f.cross(up_).normalized();
+    Vector3 u = r.cross(f);
 
-    view_matrix_ = linalg::kIdentityMatrix4;
+    view_matrix_ = kIdentityMatrix4;
     view_matrix_(0, 0) = r.x();
     view_matrix_(0, 1) = r.y();
     view_matrix_(0, 2) = r.z();
@@ -48,7 +48,7 @@ void Camera::UpdateViewProjectionMatrix() {
     view_projection_matrix_ = projection_matrix_ * view_matrix_;
 }
 
-const linalg::Matrix4& Camera::GetViewProjectionMatrix() const {
+const Matrix4& Camera::GetViewProjectionMatrix() const {
     return view_projection_matrix_;
 }
 

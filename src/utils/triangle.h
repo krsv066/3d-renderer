@@ -2,10 +2,10 @@
 
 #include "linalg.h"
 
-namespace renderer::primitive {
+namespace renderer {
 struct Triangle {
-    linalg::Vector3 a;
-    linalg::Vector3 b;
-    linalg::Vector3 c;
+    Vector3 a;
+    Vector3 b;
+    Vector3 c;
 };
-}  // namespace renderer::primitive
+}  // namespace renderer

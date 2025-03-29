@@ -30,6 +30,10 @@ private:
     Vector4 ProjectVertex(const Vector3& point, const Camera& camera, const Screen& screen) const;
     Color CalculateLighting(Color base_color, const Vector3& normal,
                             const std::vector<Light>& lights) const;
+    std::vector<TriangleProjected> ClipTriangleAgainstNearPlane(
+        const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector3& normal,
+        const Color& color, double near_z) const;
+    Vector4 InterpolateVertex(const Vector4& v1, const Vector4& v2, double near_z) const;
 
     inline Vector3 GetGlobalCoordinates(const Object& obj, const Vector3& point) const {
         return obj.GetRotation() * point + obj.GetTranslation();

@@ -9,8 +9,6 @@ Screen::Screen(Width width, Height height)
       height_(height),
       z_buffer_(width_ * height_, std::numeric_limits<double>::infinity()),
       frame_buffer_(width_ * height_ * 4, 0) {
-    assert(width_ > 0);
-    assert(height_ > 0);
 }
 
 Screen::Screen(Screen&& other) noexcept

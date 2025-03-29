@@ -27,7 +27,7 @@ public:
     explicit constexpr Color(Red r = Red{0.0}, Green g = Green{0.0}, Blue b = Blue{0.0})
         : r_(r), g_(g), b_(b) {
     }
-
+    Color(uint32_t hex);
     uint32_t GetHex() const;
     Color operator+(const Color& other) const;
     Color operator*(const Color& other) const;

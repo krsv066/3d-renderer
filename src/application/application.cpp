@@ -1,5 +1,6 @@
 #include "application.h"
 #include "camera.h"
+#include "cmd_parser.h"
 #include "obj_parser.h"
 #include <SFML/Graphics.hpp>
 #include <chrono>
@@ -12,13 +13,10 @@ static constexpr std::string kDefaultTitel = "3D Renderer";
 static constexpr double kDistanceScale = 2.5;
 static constexpr double kRotationScale = 1.0;
 
-Application::Application()
-    : renderer_(Renderer::Mode::Filled),
-      world_({Parser::LoadObj("../build/cow.obj")}),
+Application::Application(int argc, char* argv[])
+    : renderer_(),
+      world_(ObjParser::LoadObjects(CmdParser::ExtractFromArgs(argc, argv))),
       camera_(kDefaultWidth, kDefaultHeight) {
-
-    world_.AddLight(
-        Light::Directional(Vector3(-1.0, -1.0, -1.0), Color{Red{1.0}, Green{0.9}, Blue{0.7}}, 0.6));
 }
 
 void Application::ProcessInput(sf::RenderWindow& window, double delta_time) {

@@ -4,6 +4,12 @@
 namespace renderer {
 static constexpr double kMaxHexColorComponent = 255.0;
 
+Color::Color(uint32_t hex)
+    : r_(Red(((hex >> 16) & 0xFF) / kMaxHexColorComponent)),
+      g_(Green(((hex >> 8) & 0xFF) / kMaxHexColorComponent)),
+      b_(Blue((hex & 0xFF) / kMaxHexColorComponent)) {
+}
+
 uint32_t Color::GetHex() const {
     uint8_t r_component = static_cast<uint8_t>(r_.value * kMaxHexColorComponent);
     uint8_t g_component = static_cast<uint8_t>(g_.value * kMaxHexColorComponent);

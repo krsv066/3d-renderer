@@ -6,7 +6,7 @@
 namespace renderer {
 class Application {
 public:
-    Application();
+    Application(int argc, char* argv[]);
     void Run();
 
 private:

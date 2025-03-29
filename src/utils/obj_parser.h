@@ -6,11 +6,11 @@
 #include <vector>
 
 namespace renderer {
-class Parser {
+class ObjParser {
 public:
-    static renderer::Object LoadObj(const std::string& filename, Color color = kWhiteColor,
-                                    const Vector3& translation = kZeroVector3,
-                                    const Matrix3& rotation = kIdentityMatrix3);
+    static std::vector<Object> LoadObjects(
+        const std::vector<std::pair<std::string, Color>>& filenames,
+        const Vector3& translation = kZeroVector3, const Matrix3& rotation = kIdentityMatrix3);
 
 private:
     static std::vector<Vector3> ParseVertices(const std::string& content);

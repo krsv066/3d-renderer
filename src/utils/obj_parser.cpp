@@ -3,30 +3,36 @@
 #include <sstream>
 #include <stdexcept>
 #include <cassert>
+#include "color.h"
 
 namespace renderer {
-renderer::Object Parser::LoadObj(const std::string& filename, Color color,
-                                 const Vector3& translation, const Matrix3& rotation) {
-    assert(!filename.empty());
-    std::ifstream file(filename);
-    if (!file.is_open()) {
-        throw std::runtime_error("Failed to open file: " + filename);
+std::vector<Object> ObjParser::LoadObjects(
+    const std::vector<std::pair<std::string, Color>>& filenames, const Vector3& translation,
+    const Matrix3& rotation) {
+    assert(!filenames.empty());
+    std::vector<Object> objects;
+
+    for (const auto& filename : filenames) {
+        std::ifstream file(filename.first);
+        if (!file.is_open()) {
+            throw std::runtime_error("Failed to open file: " + filename.first);
+        }
+
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        std::string content = buffer.str();
+
+        auto vertices = ParseVertices(content);
+        assert(!vertices.empty());
+        auto triangles = ParseFaces(content, vertices, filename.second);
+        assert(!triangles.empty());
+        objects.emplace_back(std::move(triangles), translation, rotation);
     }
 
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    std::string content = buffer.str();
-
-    auto vertices = ParseVertices(content);
-    assert(!vertices.empty());
-    auto triangles = ParseFaces(content, vertices, color);
-    assert(!triangles.empty());
-    renderer::Object obj(std::move(triangles), translation, rotation);
-
-    return obj;
+    return objects;
 }
 
-std::vector<Vector3> Parser::ParseVertices(const std::string& content) {
+std::vector<Vector3> ObjParser::ParseVertices(const std::string& content) {
     std::vector<Vector3> vertices;
     std::stringstream ss(content);
     std::string line;
@@ -45,8 +51,8 @@ std::vector<Vector3> Parser::ParseVertices(const std::string& content) {
     return vertices;
 }
 
-std::vector<Triangle> Parser::ParseFaces(const std::string& content,
-                                         const std::vector<Vector3>& vertices, Color color) {
+std::vector<Triangle> ObjParser::ParseFaces(const std::string& content,
+                                            const std::vector<Vector3>& vertices, Color color) {
     assert(!vertices.empty());
     std::vector<Triangle> triangles;
     std::stringstream ss(content);

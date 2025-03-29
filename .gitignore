@@ -40,3 +40,4 @@ debug_build
 # Files
 compile_commands.json
 .clangd
+*.obj

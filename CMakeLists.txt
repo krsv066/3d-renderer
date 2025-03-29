@@ -61,6 +61,7 @@ add_executable(
     src/scene/object.cpp
     src/scene/world.cpp
     src/screen/screen.cpp
+    src/utils/cmd_parser.cpp
     src/utils/color.cpp
     src/utils/except.cpp
     src/utils/obj_parser.cpp

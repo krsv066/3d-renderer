@@ -2,7 +2,7 @@
 
 #include "renderer.h"
 #include "timer.h"
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics.hpp>
 
 namespace renderer {
 class Application {
@@ -17,5 +17,7 @@ private:
     Timer timer_;
 
     void ProcessInput(sf::RenderWindow& window, double delta_time);
+    void Draw(sf::RenderWindow& window, sf::Texture& texture, sf::Sprite& sprite,
+              const Screen& screen);
 };
 }  // namespace renderer

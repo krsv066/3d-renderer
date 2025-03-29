@@ -3,7 +3,6 @@
 #include "cmd_parser.h"
 #include "obj_parser.h"
 #include "timer.h"
-#include <SFML/Graphics.hpp>
 #include <string>
 
 namespace renderer {
@@ -71,6 +70,16 @@ void Application::ProcessInput(sf::RenderWindow& window, double delta_time) {
     }
 }
 
+void Application::Draw(sf::RenderWindow& window, sf::Texture& texture, sf::Sprite& sprite,
+                       const Screen& screen) {
+    texture.update(screen.GetFrameBuffer());
+    sprite.setTexture(texture);
+
+    window.clear();
+    window.draw(sprite);
+    window.display();
+}
+
 void Application::Run() {
     sf::RenderWindow window(sf::VideoMode({kDefaultWidth, kDefaultHeight}), kDefaultTitel);
     sf::Texture texture(sf::Vector2u(kDefaultWidth, kDefaultHeight));
@@ -88,12 +97,7 @@ void Application::Run() {
         double delta_time = timer_.Tick();
         ProcessInput(window, delta_time);
         screen = renderer_.Render(world_, camera_, std::move(screen));
-        texture.update(screen.GetFrameBuffer());
-        sprite.setTexture(texture);
-
-        window.clear();
-        window.draw(sprite);
-        window.display();
+        Draw(window, texture, sprite, screen);
     }
 }
 }  // namespace renderer

@@ -6,7 +6,7 @@
 namespace renderer {
 class World {
 public:
-    World(std::vector<Object> objects);
+    World(std::vector<Object> &&objects);
     const std::vector<Object> &GetObjects() const;
     const std::vector<Light> &GetLights() const;
     void AddLight(const Light &light);

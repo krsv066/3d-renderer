@@ -27,6 +27,7 @@ endif()
 include_directories(
     src/application
     src/camera
+    src/parsers
     src/renderer
     src/scene
     src/screen
@@ -55,16 +56,16 @@ add_executable(
     src/main.cpp
     src/application/application.cpp
     src/camera/camera.cpp
+    src/parsers/cmd_parser.cpp
+    src/parsers/obj_parser.cpp
     src/renderer/renderer.cpp
     src/renderer/filled_renderer.cpp
     src/renderer/wireframe_renderer.cpp
     src/scene/object.cpp
     src/scene/world.cpp
     src/screen/screen.cpp
-    src/utils/cmd_parser.cpp
     src/utils/color.cpp
     src/utils/except.cpp
-    src/utils/obj_parser.cpp
 )
 
 target_link_libraries(renderer PRIVATE SFML::Graphics Eigen3::Eigen)

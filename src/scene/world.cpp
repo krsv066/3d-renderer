@@ -1,7 +1,7 @@
 #include "world.h"
 
 namespace renderer {
-World::World(std::vector<Object> objects) : objects_(objects) {
+World::World(std::vector<Object> &&objects) : objects_(std::move(objects)) {
     lights_.push_back(Light::Ambient(kDefaultAmbient, 1.0));
     lights_.push_back(Light::Directional(Vector3(-1.0, -1.0, -1.0), kDefaultDirectional, 0.8));
 }

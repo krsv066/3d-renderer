@@ -6,7 +6,7 @@
 #include "color.h"
 
 namespace renderer {
-std::vector<Object> ObjParser::LoadObjects(
+std::vector<Object> ObjParser::CreateObjects(
     const std::vector<std::pair<std::string, Color>>& filenames, const Vector3& translation,
     const Matrix3& rotation) {
     assert(!filenames.empty());

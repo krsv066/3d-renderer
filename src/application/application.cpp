@@ -15,7 +15,7 @@ static constexpr double kRotationScale = 1.0;
 
 Application::Application(int argc, char* argv[])
     : renderer_(),
-      world_(ObjParser::LoadObjects(CmdParser::ExtractFromArgs(argc, argv))),
+      world_(ObjParser::CreateObjects(CmdParser::ExtractFromArgs(argc, argv))),
       camera_(kDefaultWidth, kDefaultHeight) {
 }
 

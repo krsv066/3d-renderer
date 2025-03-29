@@ -13,8 +13,14 @@ public:
         const Vector3& translation = kZeroVector3, const Matrix3& rotation = kIdentityMatrix3);
 
 private:
+    static std::string ReadFile(const std::string& filename);
     static std::vector<Vector3> ParseVertices(const std::string& content);
     static std::vector<Triangle> ParseFaces(const std::string& content,
                                             const std::vector<Vector3>& vertices, Color color);
+
+    static bool IsVertexLine(const std::string& line);
+    static bool IsFaceLine(const std::string& line);
+    static std::tuple<double, double, double> ExtractCoordinates(const std::string& vertex_data);
+    static std::vector<int> ExtractIndices(const std::string& face_data);
 };
 }  // namespace renderer

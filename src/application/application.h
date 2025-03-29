@@ -1,6 +1,7 @@
 #pragma once
 
 #include "renderer.h"
+#include "timer.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 
 namespace renderer {
@@ -13,6 +14,7 @@ private:
     Renderer renderer_;
     World world_;
     Camera camera_;
+    Timer timer_;
 
     void ProcessInput(sf::RenderWindow& window, double delta_time);
 };

@@ -2,8 +2,8 @@
 #include "camera.h"
 #include "cmd_parser.h"
 #include "obj_parser.h"
+#include "timer.h"
 #include <SFML/Graphics.hpp>
-#include <chrono>
 #include <string>
 
 namespace renderer {
@@ -16,7 +16,8 @@ static constexpr double kRotationScale = 1.0;
 Application::Application(int argc, char* argv[])
     : renderer_(),
       world_(ObjParser::CreateObjects(CmdParser::ExtractFromArgs(argc, argv))),
-      camera_(kDefaultWidth, kDefaultHeight) {
+      camera_(kDefaultWidth, kDefaultHeight),
+      timer_() {
 }
 
 void Application::ProcessInput(sf::RenderWindow& window, double delta_time) {
@@ -76,20 +77,15 @@ void Application::Run() {
     sf::Sprite sprite(texture);
 
     Screen screen(kDefaultWidth, kDefaultHeight);
-    auto last_frame_time = std::chrono::high_resolution_clock::now();
 
     while (window.isOpen()) {
-        auto current_frame_time = std::chrono::high_resolution_clock::now();
-        double delta_time =
-            std::chrono::duration<double>(current_frame_time - last_frame_time).count();
-        last_frame_time = current_frame_time;
-
         while (const std::optional event = window.pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
                 window.close();
             }
         }
 
+        double delta_time = timer_.Tick();
         ProcessInput(window, delta_time);
         screen = renderer_.Render(world_, camera_, std::move(screen));
         texture.update(screen.GetFrameBuffer());

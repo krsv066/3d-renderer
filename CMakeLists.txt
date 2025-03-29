@@ -66,6 +66,7 @@ add_executable(
     src/screen/screen.cpp
     src/utils/color.cpp
     src/utils/except.cpp
+    src/utils/timer.cpp
 )
 
 target_link_libraries(renderer PRIVATE SFML::Graphics Eigen3::Eigen)

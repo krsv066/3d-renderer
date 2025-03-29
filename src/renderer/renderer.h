@@ -23,8 +23,8 @@ private:
 
     void RenderTriangle(const Object& obj, const Triangle& triangle, const Camera& camera,
                         Screen& screen, const World& world) const;
-    void RenderTriangleWireframe(const TriangleProjected& triangle_pr, const std::vector<Light>&,
-                                 Screen& screen) const;
+    void RenderTriangleWireframe(const TriangleProjected& triangle_pr,
+                                 const std::vector<Light>& lights, Screen& screen) const;
     void RenderTriangleFilled(const TriangleProjected& triangle_pr,
                               const std::vector<Light>& lights, Screen& screen) const;
     Vector4 ProjectVertex(const Vector3& point, const Camera& camera, const Screen& screen) const;
@@ -37,10 +37,6 @@ private:
 
     inline Vector3 GetGlobalCoordinates(const Object& obj, const Vector3& point) const {
         return obj.GetRotation() * point + obj.GetTranslation();
-    }
-
-    inline Vector3 CalculateNormal(const Vector3& a, const Vector3& b, const Vector3& c) const {
-        return (b - a).cross(c - a).normalized();
     }
 
     inline double CalculateEdgeValue(double x0, double y0, double x1, double y1, double x,

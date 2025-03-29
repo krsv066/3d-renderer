@@ -7,15 +7,15 @@
 
 namespace renderer {
 std::vector<Object> ObjParser::CreateObjects(
-    const std::vector<std::pair<std::string, Color>>& filenames, const Vector3& translation,
-    const Matrix3& rotation) {
-    assert(!filenames.empty());
+    const std::vector<std::pair<std::string, Color>>& file_color_mappings,
+    const Vector3& translation, const Matrix3& rotation) {
+    assert(!file_color_mappings.empty());
     std::vector<Object> objects;
 
-    for (const auto& filename : filenames) {
-        std::ifstream file(filename.first);
+    for (const auto& mapping : file_color_mappings) {
+        std::ifstream file(mapping.first);
         if (!file.is_open()) {
-            throw std::runtime_error("Failed to open file: " + filename.first);
+            throw std::runtime_error("Failed to open file: " + mapping.first);
         }
 
         std::stringstream buffer;
@@ -24,7 +24,7 @@ std::vector<Object> ObjParser::CreateObjects(
 
         auto vertices = ParseVertices(content);
         assert(!vertices.empty());
-        auto triangles = ParseFaces(content, vertices, filename.second);
+        auto triangles = ParseFaces(content, vertices, mapping.second);
         assert(!triangles.empty());
         objects.emplace_back(std::move(triangles), translation, rotation);
     }
@@ -77,7 +77,10 @@ std::vector<Triangle> ObjParser::ParseFaces(const std::string& content,
             Vector3 a = vertices[indices[0]];
             Vector3 b = vertices[indices[i]];
             Vector3 c = vertices[indices[i + 1]];
-            triangles.emplace_back(a, b, c, (b - a).cross(c - a).normalized(), color);
+            auto calculate_normal = [](const Vector3& a, const Vector3& b, const Vector3& c) {
+                return (b - a).cross(c - a).normalized();
+            };
+            triangles.emplace_back(a, b, c, calculate_normal(a, b, c), color);
         }
     }
 

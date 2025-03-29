@@ -11,13 +11,22 @@ std::vector<std::pair<std::string, Color>> CmdParser::ExtractFromArgs(int argc, 
         throw std::runtime_error("To few arguments");
     }
 
-    for (int i = 1; i < argc; i += 2) {
+    for (int i = 1; i < argc;) {
+        std::string model_path = std::string("../models/") + argv[i] + ".obj";
+        Color color = kWhiteColor;
+
         if (i + 1 < argc) {
-            paths.push_back({std::string("../models/") + argv[i] + ".obj",
-                             Color(static_cast<uint32_t>(std::stoul(argv[i + 1], nullptr, 0)))});
+            try {
+                color = Color(static_cast<uint32_t>(std::stoul(argv[i + 1], nullptr, 0)));
+                i += 2;
+            } catch (const std::exception&) {
+                ++i;
+            }
         } else {
-            throw std::runtime_error("Color value is missing for model " + std::string(argv[i]));
+            ++i;
         }
+
+        paths.push_back({model_path, color});
     }
 
     return paths;

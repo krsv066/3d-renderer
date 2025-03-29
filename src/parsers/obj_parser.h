@@ -9,7 +9,7 @@ namespace renderer {
 class ObjParser {
 public:
     static std::vector<Object> CreateObjects(
-        const std::vector<std::pair<std::string, Color>>& filenames,
+        const std::vector<std::pair<std::string, Color>>& file_color_mappings,
         const Vector3& translation = kZeroVector3, const Matrix3& rotation = kIdentityMatrix3);
 
 private:

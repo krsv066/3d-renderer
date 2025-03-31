@@ -3,61 +3,57 @@
 #include "cmd_parser.h"
 #include "obj_parser.h"
 #include "timer.h"
-#include <string>
 
 namespace renderer {
-static constexpr Width kDefaultWidth{1280};
-static constexpr Height kDefaultHeight{720};
-static constexpr std::string kDefaultTitel = "3D Renderer";
-static constexpr double kDistanceScale = 2.5;
-static constexpr double kRotationScale = 1.0;
-
 Application::Application(int argc, char* argv[])
     : renderer_(),
-      world_(ObjParser::CreateObjects(CmdParser::ExtractFromArgs(argc, argv))),
+      world_(ObjParser::CreateObjects(CmdParser::ExtractModelInfo(argc, argv))),
       camera_(kDefaultWidth, kDefaultHeight),
-      timer_() {
+      timer_(),
+      drawer_(kDefaultWidth, kDefaultHeight, kDefaultTitel),
+      screen_(std::make_unique<Screen>(kDefaultWidth, kDefaultHeight)) {
 }
 
-void Application::ProcessInput(sf::RenderWindow& window, double delta_time) {
+Movement Application::ProcessInput(double delta_time) {
+    Movement movement;
     const double distance = kDistanceScale * delta_time;
     const double rotation = kRotationScale * delta_time;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::W)) {
-        camera_.MoveForward(distance);
+        movement.forward_movement = distance;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::S)) {
-        camera_.MoveBackward(distance);
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A)) {
-        camera_.MoveLeft(distance);
+        movement.forward_movement = -distance;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::D)) {
-        camera_.MoveRight(distance);
+        movement.right_movement = distance;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A)) {
+        movement.right_movement = -distance;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LShift)) {
-        camera_.MoveUp(distance);
+        movement.up_movement = distance;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl)) {
-        camera_.MoveDown(distance);
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left)) {
-        camera_.RotateHorizontal(-rotation);
+        movement.up_movement = -distance;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right)) {
-        camera_.RotateHorizontal(rotation);
+        movement.horizontal_rotation = rotation;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left)) {
+        movement.horizontal_rotation = -rotation;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Up)) {
-        camera_.RotateVertical(rotation);
+        movement.vertical_rotation = rotation;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Down)) {
-        camera_.RotateVertical(-rotation);
+        movement.vertical_rotation = -rotation;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Q)) {
-        camera_.RotateRoll(rotation);
+        movement.roll_rotation = rotation;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::E)) {
-        camera_.RotateRoll(-rotation);
+        movement.roll_rotation = -rotation;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Num1)) {
         renderer_.SetMode(Renderer::Mode::Wireframe);
@@ -66,38 +62,25 @@ void Application::ProcessInput(sf::RenderWindow& window, double delta_time) {
         renderer_.SetMode(Renderer::Mode::Filled);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Escape)) {
-        window.close();
+        drawer_.CloseWindow();
     }
-}
 
-void Application::Draw(sf::RenderWindow& window, sf::Texture& texture, sf::Sprite& sprite,
-                       const Screen& screen) {
-    texture.update(screen.GetFrameBuffer());
-    sprite.setTexture(texture);
-
-    window.clear();
-    window.draw(sprite);
-    window.display();
+    return movement;
 }
 
 void Application::Run() {
-    sf::RenderWindow window(sf::VideoMode({kDefaultWidth, kDefaultHeight}), kDefaultTitel);
-    sf::Texture texture(sf::Vector2u(kDefaultWidth, kDefaultHeight));
-    sf::Sprite sprite(texture);
-
-    Screen screen(kDefaultWidth, kDefaultHeight);
-
-    while (window.isOpen()) {
-        while (const std::optional event = window.pollEvent()) {
+    while (drawer_.IsWindowOpen()) {
+        while (const std::optional event = drawer_.PollEvent()) {
             if (event->is<sf::Event::Closed>()) {
-                window.close();
+                drawer_.CloseWindow();
             }
         }
 
         double delta_time = timer_.Tick();
-        ProcessInput(window, delta_time);
-        screen = renderer_.Render(world_, camera_, std::move(screen));
-        Draw(window, texture, sprite, screen);
+        Movement movement = ProcessInput(delta_time);
+        camera_.Move(movement);
+        screen_ = renderer_.Render(world_, camera_, std::move(screen_));
+        drawer_.Draw(screen_);
     }
 }
 }  // namespace renderer

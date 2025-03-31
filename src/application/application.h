@@ -1,8 +1,10 @@
 #pragma once
 
+#include "drawer.h"
 #include "renderer.h"
 #include "timer.h"
-#include <SFML/Graphics.hpp>
+#include <string>
+#include <memory>
 
 namespace renderer {
 class Application {
@@ -11,13 +13,18 @@ public:
     void Run();
 
 private:
+    Movement ProcessInput(double delta_time);
+
+    static constexpr Width kDefaultWidth{1280};
+    static constexpr Height kDefaultHeight{720};
+    static constexpr double kDistanceScale = 2.5;
+    static constexpr double kRotationScale = 1.0;
+    static constexpr std::string kDefaultTitel = "3D Renderer";
     Renderer renderer_;
     World world_;
     Camera camera_;
     Timer timer_;
-
-    void ProcessInput(sf::RenderWindow& window, double delta_time);
-    void Draw(sf::RenderWindow& window, sf::Texture& texture, sf::Sprite& sprite,
-              const Screen& screen);
+    Drawer drawer_;
+    std::unique_ptr<Screen> screen_;
 };
 }  // namespace renderer

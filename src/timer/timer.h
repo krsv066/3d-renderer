@@ -6,7 +6,6 @@ namespace renderer {
 class Timer {
 public:
     Timer();
-
     double Tick();
 
 private:

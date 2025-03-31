@@ -4,65 +4,76 @@
 #include "screen.h"
 
 namespace renderer {
-static constexpr double kStraightAngle = 180.0;
+class Aspect {
+public:
+    explicit Aspect(double value);
+    double Get() const;
 
-struct Aspect {
-    double value;
-    explicit constexpr Aspect(double value) : value(value) {
-    }
+private:
+    double value_;
 };
 
-struct Fov {
-    double value;
-    explicit constexpr Fov(double value) : value(value * M_PI / kStraightAngle) {
-    }
+class Fov {
+public:
+    explicit Fov(double value);
+    double Get() const;
+
+private:
+    double value_;
 };
 
-struct Near {
-    double value;
-    explicit constexpr Near(double value) : value(value) {
-    }
+class Near {
+public:
+    explicit Near(double value);
+    double Get() const;
+
+private:
+    double value_;
 };
 
-struct Far {
-    double value;
-    explicit constexpr Far(double value) : value(value) {
-    }
+class Far {
+public:
+    explicit Far(double value);
+    double Get() const;
+
+private:
+    double value_;
 };
 
-static constexpr Fov kDefaultFov = Fov{60.0};
-static constexpr Near kDefaultNearBound = Near{0.1};
-static constexpr Far kDefaultFarBound = Far{100.0};
+struct Movement {
+    double forward_movement = 0.0;
+    double right_movement = 0.0;
+    double up_movement = 0.0;
+    double horizontal_rotation = 0.0;
+    double vertical_rotation = 0.0;
+    double roll_rotation = 0.0;
+};
 
 class Camera {
 public:
-    Camera(Width width, Height height, Fov fov = kDefaultFov, Near near = kDefaultNearBound,
-           Far far = kDefaultFarBound);
+    Camera(Width width, Height height, Fov fov = Fov{60.0}, Near near = Near{0.1},
+           Far far = Far{100.0});
     const Matrix4& GetViewProjectionMatrix() const;
+    void Move(const Movement& movement);
+    double GetNear() const;
+
+private:
+    static Matrix4 MakeProjectionMatrix(Width width, Height height, Fov fov, Near near, Far far);
+    static Matrix4 MakeViewMatrix(const Vector3& position, const Vector3& front, const Vector3& up);
     void MoveForward(double distance);
-    void MoveBackward(double distance);
     void MoveRight(double distance);
-    void MoveLeft(double distance);
     void MoveUp(double distance);
-    void MoveDown(double distance);
     void RotateHorizontal(double angle);
     void RotateVertical(double angle);
     void RotateRoll(double angle);
 
-private:
-    Matrix4 projection_matrix_;
+    const Near near_;
+    const Matrix4 projection_matrix_;
+    Vector3 position_;
+    Vector3 front_;
+    Vector3 up_;
+    Vector3 right_;
     Matrix4 view_matrix_;
     Matrix4 view_projection_matrix_;
-    Vector3 position_ = Vector3(0, 0, 0);
-    Vector3 front_ = Vector3(0, 0, -1);
-    Vector3 up_ = Vector3(0, 1, 0);
-    Vector3 right_ = Vector3(1, 0, 0);
-    const Aspect aspect_;
-    const Fov fov_;
-    const Near near_;
-    const Far far_;
-
-    void UpdateViewMatrix();
-    void UpdateViewProjectionMatrix();
 };
 }  // namespace renderer

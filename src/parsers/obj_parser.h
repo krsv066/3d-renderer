@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cmd_parser.h"
 #include "color.h"
 #include "object.h"
 #include <string>
@@ -8,19 +9,13 @@
 namespace renderer {
 class ObjParser {
 public:
-    static std::vector<Object> CreateObjects(
-        const std::vector<std::pair<std::string, Color>>& file_color_mappings,
-        const Vector3& translation = kZeroVector3, const Matrix3& rotation = kIdentityMatrix3);
+    static std::vector<Object> CreateObjects(const std::vector<ModelInfo>& model_infos, const Vector3& translation = Vector3::Zero(), const Matrix3& rotation = Matrix3::Identity());
 
 private:
-    static std::string ReadFile(const std::string& filename);
+    static Object LoadObj(const ModelInfo& model_info, const Vector3& translation, const Matrix3& rotation);
+    static Vector3 CalculateNormal(const Vector3& a, const Vector3& b, const Vector3& c);
     static std::vector<Vector3> ParseVertices(const std::string& content);
-    static std::vector<Triangle> ParseFaces(const std::string& content,
-                                            const std::vector<Vector3>& vertices, Color color);
-
-    static bool IsVertexLine(const std::string& line);
-    static bool IsFaceLine(const std::string& line);
-    static std::tuple<double, double, double> ExtractCoordinates(const std::string& vertex_data);
-    static std::vector<int> ExtractIndices(const std::string& face_data);
+    static std::vector<Triangle> ParseFaces(const std::string& content, const std::vector<Vector3>& vertices, Color color);
+    static bool AreIndicesValid(const std::vector<int>& indices, const std::vector<Vector3>& vertices, size_t i);
 };
 }  // namespace renderer

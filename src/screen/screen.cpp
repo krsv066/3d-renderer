@@ -1,35 +1,10 @@
 #include "screen.h"
 #include <algorithm>
-#include <limits>
 #include <cassert>
+#include <limits>
 
 namespace renderer {
-Screen::Screen(Width width, Height height)
-    : width_(width),
-      height_(height),
-      z_buffer_(width_ * height_, std::numeric_limits<double>::infinity()),
-      frame_buffer_(width_ * height_ * 4, 0) {
-}
-
-Screen::Screen(Screen&& other) noexcept
-    : width_(other.width_),
-      height_(other.height_),
-      z_buffer_(std::move(other.z_buffer_)),
-      frame_buffer_(std::move(other.frame_buffer_)) {
-    other.width_ = Width{0};
-    other.height_ = Height{0};
-}
-
-Screen& Screen::operator=(Screen&& other) noexcept {
-    if (this != &other) {
-        width_ = other.width_;
-        height_ = other.height_;
-        z_buffer_ = std::move(other.z_buffer_);
-        frame_buffer_ = std::move(other.frame_buffer_);
-        other.width_ = Width{0};
-        other.height_ = Height{0};
-    }
-    return *this;
+Screen::Screen(Width width, Height height) : width_(width), height_(height), z_buffer_(width_ * height_, std::numeric_limits<double>::infinity()), frame_buffer_(width_ * height_ * 4, 0) {
 }
 
 double Screen::GetZBufferDepth(int x, int y) const {
@@ -53,15 +28,15 @@ void Screen::SetZBufferDepth(int x, int y, double z) {
     z_buffer_[GetZBufIdx(x, y)] = z;
 }
 
-void Screen::SetFrameBufferPixel(int x, int y, uint32_t color) {
+void Screen::SetFrameBufferPixel(int x, int y, Color color) {
     int index = GetFBufIdx(x, y);
-    frame_buffer_[index] = (color >> 16) & 0xFF;
-    frame_buffer_[index + 1] = (color >> 8) & 0xFF;
-    frame_buffer_[index + 2] = color & 0xFF;
-    frame_buffer_[index + 3] = 0xFF;
+    frame_buffer_[index] = color.Red();
+    frame_buffer_[index + 1] = color.Green();
+    frame_buffer_[index + 2] = color.Blue();
+    frame_buffer_[index + 3] = 0xff;
 }
 
-void Screen::FillBlackColor() {
+void Screen::ResetBuffers() {
     std::fill(frame_buffer_.begin(), frame_buffer_.end(), 0);
     std::fill(z_buffer_.begin(), z_buffer_.end(), std::numeric_limits<double>::infinity());
 }

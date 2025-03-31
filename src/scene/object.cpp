@@ -1,9 +1,7 @@
 #include "object.h"
 
 namespace renderer {
-Object::Object(std::vector<Triangle> &&triangles, const Vector3 &translation,
-               const Matrix3 &rotation)
-    : object_(std::move(triangles)), translation_(translation), rotation_(rotation) {
+Object::Object(std::vector<Triangle> &&triangles, const Vector3 &translation, const Matrix3 &rotation) : object_(std::move(triangles)), translation_(translation), rotation_(rotation) {
 }
 
 const std::vector<Triangle> &Object::GetTriangles() const {

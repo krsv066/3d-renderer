@@ -4,68 +4,42 @@
 #include "linalg.h"
 #include "screen.h"
 #include "world.h"
-#include <cmath>
 #include <cstdint>
 #include <functional>
+#include <memory>
 
 namespace renderer {
 class Renderer {
 public:
     enum class Mode : uint8_t { Wireframe, Filled };
     Renderer(Mode mode = Mode::Wireframe);
-    Screen Render(const World& scene, const Camera& camera, Screen&& screen) const;
     void SetMode(Mode mode);
+    std::unique_ptr<Screen> Render(const World &scene, const Camera &camera, std::unique_ptr<Screen> screen) const;
+    Renderer(const Renderer &) = delete;
+    Renderer &operator=(const Renderer &) = delete;
+    Renderer(Renderer &&) = delete;
+    Renderer &operator=(Renderer &&) = delete;
 
 private:
-    using RenderTriangleFunc = std::function<void(
-        const TriangleProjected& triangle_proj, const std::vector<Light>& lights, Screen& screen)>;
+    using RenderTriangleFunc = std::function<void(const TriangleProjected &triangle_proj, const std::vector<Light> &lights, std::unique_ptr<Screen> &screen)>;
+
+    void RenderTriangle(const Object &obj, const Triangle &triangle, const Camera &camera, const World &world, std::unique_ptr<Screen> &screen) const;
+    std::vector<TriangleProjected> ClipTriangleAgainstNearPlane(const Vector4 &v1, const Vector4 &v2, const Vector4 &v3, const Vector3 &normal, const Color &color, double near_z) const;
+    TriangleProjected ProjectTriangleToScreen(const TriangleProjected &clipped, std::unique_ptr<Screen> &screen) const;
+    void RenderTriangleWireframe(const TriangleProjected &triangle_pr, const std::vector<Light> &lights, std::unique_ptr<Screen> &screen) const;
+    void RenderTriangleFilled(const TriangleProjected &triangle_pr, const std::vector<Light> &lights, std::unique_ptr<Screen> &screen) const;
+    void DrawLine(int x0, int y0, int x1, int y1, const Color &color, std::unique_ptr<Screen> &screen) const;
+    void RasterizePixel(const Vector4 &a, const Vector4 &b, const Vector4 &c, const Vector3 &normal, const Color &color, int x, int y, double w0, double w1, double w2, double area,
+                        const std::vector<Light> &lights, std::unique_ptr<Screen> &screen) const;
+    Color CalculateLighting(Color base_color, const Vector3 &normal, const std::vector<Light> &lights) const;
+    Vector4 InterpolateVertex(const Vector4 &v1, const Vector4 &v2, double near_z) const;
+    Vector3 GetGlobalCoordinates(const Object &obj, const Vector3 &point) const;
+    double CalculateSignedArea(double x0, double y0, double x1, double y1, double x, double y) const;
+    int GetMinScreenX(double x) const;
+    int GetMaxScreenX(double x, const std::unique_ptr<Screen> &screen) const;
+    int GetMinScreenY(double y) const;
+    int GetMaxScreenY(double y, const std::unique_ptr<Screen> &screen) const;
+
     RenderTriangleFunc render_triangle_;
-
-    void RenderTriangle(const Object& obj, const Triangle& triangle, const Camera& camera,
-                        Screen& screen, const World& world) const;
-    void RenderTriangleWireframe(const TriangleProjected& triangle_pr,
-                                 const std::vector<Light>& lights, Screen& screen) const;
-    void RenderTriangleFilled(const TriangleProjected& triangle_pr,
-                              const std::vector<Light>& lights, Screen& screen) const;
-    Vector4 ProjectVertex(const Vector3& point, const Camera& camera, const Screen& screen) const;
-    Color CalculateLighting(Color base_color, const Vector3& normal,
-                            const std::vector<Light>& lights) const;
-    std::vector<TriangleProjected> ClipTriangleAgainstNearPlane(
-        const Vector4& v1, const Vector4& v2, const Vector4& v3, const Vector3& normal,
-        const Color& color, double near_z) const;
-    Vector4 InterpolateVertex(const Vector4& v1, const Vector4& v2, double near_z) const;
-
-    inline Vector3 GetGlobalCoordinates(const Object& obj, const Vector3& point) const {
-        return obj.GetRotation() * point + obj.GetTranslation();
-    }
-
-    inline double CalculateEdgeValue(double x0, double y0, double x1, double y1, double x,
-                                     double y) const {
-        return (y - y0) * (x1 - x0) - (x - x0) * (y1 - y0);
-    }
-
-    inline int ToScreenX(double x, const Screen& screen) const {
-        return std::min(static_cast<int>(std::ceil(x)), static_cast<int>(screen.GetWidth()) - 1);
-    }
-
-    inline int ToScreenY(double y, const Screen& screen) const {
-        return std::min(static_cast<int>(std::ceil(y)), static_cast<int>(screen.GetHeight()) - 1);
-    }
-
-    inline int GetMinScreenX(double x) const {
-        return std::max(0, static_cast<int>(std::floor(x)));
-    }
-
-    inline int GetMaxScreenX(double x, const Screen& screen) const {
-        return std::min(static_cast<int>(screen.GetWidth()) - 1, static_cast<int>(std::ceil(x)));
-    }
-
-    inline int GetMinScreenY(double y) const {
-        return std::max(0, static_cast<int>(std::floor(y)));
-    }
-
-    inline int GetMaxScreenY(double y, const Screen& screen) const {
-        return std::min(static_cast<int>(screen.GetHeight()) - 1, static_cast<int>(std::ceil(y)));
-    }
 };
 }  // namespace renderer

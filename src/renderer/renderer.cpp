@@ -293,11 +293,8 @@ void Renderer::DrawLine(int x0, int y0, int x1, int y1, const Color &color, std:
 
 void Renderer::RasterizePixel(const Vector4 &a, const Vector4 &b, const Vector4 &c, const Vector3 &normal, const Color &color, int x, int y, double w0, double w1, double w2, double area,
                               const std::vector<Light> &lights, std::unique_ptr<Screen> &screen) const {
-    if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
-        w0 /= area;
-        w1 /= area;
-        w2 /= area;
-        const double z = w0 * a.z() + w1 * b.z() + w2 * c.z();
+    if (PointInTriangle(w0, w1, w2)) {
+        const double z = GetZCoordByArea(a, b, c, w0, w1, w2, area);
         if (z < screen->GetZBufferDepth(x, y)) {
             screen->SetZBufferDepth(x, y, z);
             Color lit_color = CalculateLighting(color, normal, lights);
@@ -335,6 +332,13 @@ Vector4 Renderer::InterpolateVertex(const Vector4 &v1, const Vector4 &v2, double
     return Vector4(v1.x() + t * (v2.x() - v1.x()), v1.y() + t * (v2.y() - v1.y()), near_z, v1.w() + t * (v2.w() - v1.w()));
 }
 
+double Renderer::GetZCoordByArea(const Vector4 &a, const Vector4 &b, const Vector4 &c, double w0, double w1, double w2, double area) const {
+    w0 /= area;
+    w1 /= area;
+    w2 /= area;
+    return w0 * a.z() + w1 * b.z() + w2 * c.z();
+}
+
 inline Vector3 Renderer::GetGlobalCoordinates(const Object &obj, const Vector3 &point) const {
     return obj.GetRotation() * point + obj.GetTranslation();
 }
@@ -357,5 +361,9 @@ inline int Renderer::GetMinScreenY(double y) const {
 
 inline int Renderer::GetMaxScreenY(double y, const std::unique_ptr<Screen> &screen) const {
     return std::min(static_cast<int>(screen->GetHeight()) - 1, static_cast<int>(std::ceil(y)));
+}
+
+inline bool Renderer::PointInTriangle(double w0, double w1, double w2) const {
+    return w0 >= 0 && w1 >= 0 && w2 >= 0;
 }
 }  // namespace renderer

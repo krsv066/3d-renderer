@@ -35,11 +35,13 @@ private:
     Color CalculateLighting(Color base_color, const Vector3 &normal, const std::vector<Light> &lights) const;
     Vector4 InterpolateVertex(const Vector4 &v1, const Vector4 &v2, double near_z) const;
     Vector3 GetGlobalCoordinates(const Object &obj, const Vector3 &point) const;
+    double GetZCoordByArea(const Vector4 &a, const Vector4 &b, const Vector4 &c, double w0, double w1, double w2, double area) const;
     double CalculateSignedArea(double x0, double y0, double x1, double y1, double x, double y) const;
     int GetMinScreenX(double x) const;
     int GetMaxScreenX(double x, const std::unique_ptr<Screen> &screen) const;
     int GetMinScreenY(double y) const;
     int GetMaxScreenY(double y, const std::unique_ptr<Screen> &screen) const;
+    bool PointInTriangle(double w0, double w1, double w2) const;
 
     RenderTriangleFunc render_triangle_;
 };

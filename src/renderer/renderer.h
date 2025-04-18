@@ -12,6 +12,7 @@ namespace renderer {
 class Renderer {
 public:
     enum class Mode : uint8_t { Wireframe, Filled };
+
     Renderer(Mode mode = Mode::Wireframe);
     void SetMode(Mode mode);
     std::unique_ptr<Screen> Render(const World &scene, const Camera &camera, std::unique_ptr<Screen> screen) const;

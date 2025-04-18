@@ -2,8 +2,8 @@
 
 #include "color.h"
 #include "linalg.h"
-#include <vector>
 #include <filesystem>
+#include <vector>
 
 namespace renderer {
 struct ModelInfo {

@@ -1,6 +1,6 @@
 #include "camera.h"
-#include <cmath>
 #include <cassert>
+#include <cmath>
 
 namespace renderer {
 Aspect::Aspect(double value) : value_(value) {

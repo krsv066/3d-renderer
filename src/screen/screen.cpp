@@ -1,10 +1,11 @@
 #include "screen.h"
 #include <algorithm>
 #include <cassert>
+#include <cstddef>
 #include <limits>
 
 namespace renderer {
-Screen::Screen(Width width, Height height) : width_(width), height_(height), z_buffer_(width_ * height_, std::numeric_limits<double>::infinity()), frame_buffer_(width_ * height_ * 4, 0) {
+Screen::Screen(Width width, Height height) : width_(width), z_buffer_(width * height, std::numeric_limits<double>::infinity()), frame_buffer_(width * height * 4, 0) {
 }
 
 double Screen::GetZBufferDepth(int x, int y) const {
@@ -21,7 +22,7 @@ Width Screen::GetWidth() const {
 }
 
 Height Screen::GetHeight() const {
-    return height_;
+    return static_cast<Height>(z_buffer_.size() / static_cast<size_t>(width_));
 }
 
 void Screen::SetZBufferDepth(int x, int y, double z) {
@@ -44,7 +45,7 @@ void Screen::ResetBuffers() {
 inline int Screen::GetZBufIdx(int x, int y) const {
     assert(x >= 0 && x < width_);
     assert(y >= 0 && y < height_);
-    return (height_ - y - 1) * width_ + x;
+    return (GetHeight() - y - 1) * width_ + x;
 }
 
 inline int Screen::GetFBufIdx(int x, int y) const {

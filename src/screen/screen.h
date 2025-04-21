@@ -24,7 +24,6 @@ private:
     int GetFBufIdx(int x, int y) const;
 
     Width width_;
-    Height height_;
     std::vector<double> z_buffer_;
     std::vector<uint8_t> frame_buffer_;
 };
